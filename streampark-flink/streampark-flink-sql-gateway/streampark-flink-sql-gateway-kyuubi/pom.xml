@@ -10,5 +10,12 @@
     <artifactId>streampark-flink-sql-gateway-kyuubi</artifactId>
     <name>StreamPark : Kyuubi SQL Gateway</name>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.streampark</groupId>
+            <artifactId>streampark-flink-sql-gateway-base</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 
 </project>

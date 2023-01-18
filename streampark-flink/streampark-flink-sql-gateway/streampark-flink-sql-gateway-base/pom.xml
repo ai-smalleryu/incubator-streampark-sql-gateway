@@ -12,5 +12,9 @@
     <artifactId>streampark-flink-sql-gateway-base</artifactId>
     <name>StreamPark : Sql Gateway Base</name>
 
+    <dependencies>
+
+    </dependencies>
+
 
 </project>
