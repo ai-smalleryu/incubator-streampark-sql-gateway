@@ -8,7 +8,7 @@
     </parent>
 
     <artifactId>streampark-flink-sql-gateway-kyuubi</artifactId>
-    <name>StreamPark : Kyuubi Sql Gateway</name>
+    <name>StreamPark : Kyuubi SQL Gateway</name>
 
 
 </project>

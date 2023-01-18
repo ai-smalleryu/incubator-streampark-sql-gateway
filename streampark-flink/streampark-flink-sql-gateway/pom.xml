@@ -15,4 +15,5 @@
         <module>streampark-flink-sql-gateway-flink-1.16</module>
         <module>streampark-flink-sql-gateway-kyuubi</module>
     </modules>
+
 </project>
