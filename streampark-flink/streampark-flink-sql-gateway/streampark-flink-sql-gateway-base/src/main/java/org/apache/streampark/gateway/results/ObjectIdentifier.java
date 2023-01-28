@@ -16,9 +16,22 @@
  * limitations under the License.
  */
 
-package org.apache.streampark.gateway.config;
+package org.apache.streampark.gateway.results;
 
-import org.apache.streampark.gateway.service.SqlGatewayService;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
-/** Config options of the {@link SqlGatewayService}. */
-public class SqlGatewayServiceConfigOptions {}
+import javax.annotation.Nullable;
+
+import java.io.Serializable;
+
+@AllArgsConstructor
+@Data
+public final class ObjectIdentifier implements Serializable {
+
+  static final String UNKNOWN = "<UNKNOWN>";
+
+  private final @Nullable String catalogName;
+  private final @Nullable String databaseName;
+  private final String objectName;
+}

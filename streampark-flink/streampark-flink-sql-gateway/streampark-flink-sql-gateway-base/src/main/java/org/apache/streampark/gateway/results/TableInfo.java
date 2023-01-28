@@ -20,7 +20,6 @@ package org.apache.streampark.gateway.results;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import sun.security.util.ObjectIdentifier;
 
 /** Information of the table or view. */
 @AllArgsConstructor

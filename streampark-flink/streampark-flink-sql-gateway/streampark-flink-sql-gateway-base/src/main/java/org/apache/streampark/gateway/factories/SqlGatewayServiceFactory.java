@@ -18,8 +18,9 @@
 
 package org.apache.streampark.gateway.factories;
 
-import org.apache.streampark.gateway.results.StreamParkEngineConfig;
 import org.apache.streampark.gateway.service.SqlGatewayService;
+
+import java.util.Map;
 
 /**
  * A factory for creating {@link SqlGatewayService} from Configuration. This factory is used with
@@ -27,12 +28,12 @@ import org.apache.streampark.gateway.service.SqlGatewayService;
  */
 public interface SqlGatewayServiceFactory extends Factory {
 
+  /** Creates a {@link SqlGatewayService} from the given {@link Context}. */
+  SqlGatewayService createSqlGatewayService(Context context);
+
   interface Context {
 
-    /** Get the service to execute the request. */
-    SqlGatewayService getSqlGatewayService();
-
     /** Gives read-only access to the configuration of the current session. */
-    StreamParkEngineConfig getStreamParkEngineConfiguration();
+    Map<String, String> getGateWayServiceOptions();
   }
 }

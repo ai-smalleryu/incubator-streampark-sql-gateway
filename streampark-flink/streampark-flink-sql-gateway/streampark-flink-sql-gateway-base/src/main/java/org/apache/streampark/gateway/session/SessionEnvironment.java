@@ -18,9 +18,10 @@
 
 package org.apache.streampark.gateway.session;
 
-import jdk.internal.jline.internal.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+
+import javax.annotation.Nullable;
 
 import java.util.Map;
 

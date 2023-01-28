@@ -16,16 +16,33 @@
  * limitations under the License.
  */
 
-package org.apache.streampark.gateway.factories;
+package org.apache.streampark.gateway.utils;
 
 import org.apache.streampark.common.conf.ConfigOption;
 
-import java.util.Set;
+public class SqlGatewayRestOptions {
 
-public interface Factory {
-  String factoryIdentifier();
+  /** The address that should be used by clients to connect to the sql gateway server. */
+  public static final ConfigOption<String> ADDRESS =
+      new ConfigOption<String>(
+          "streampark.sql-gateway.service",
+          "org.apache.streampark.gateway.service.SqlGatewayService",
+          true,
+          String.class,
+          "The service to execute the request.",
+          null,
+          null,
+          null);
 
-  Set<ConfigOption<?>> requiredOptions();
-
-  Set<ConfigOption<?>> optionalOptions();
+  /** The port that the client connects to. */
+  public static final ConfigOption<Integer> PORT =
+      new ConfigOption<Integer>(
+          "streampark.sql-gateway.service",
+          8080,
+          true,
+          Integer.class,
+          "The service to execute the request.",
+          null,
+          null,
+          null);
 }

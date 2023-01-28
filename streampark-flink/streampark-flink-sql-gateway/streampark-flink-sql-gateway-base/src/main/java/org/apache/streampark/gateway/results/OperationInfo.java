@@ -20,8 +20,9 @@ package org.apache.streampark.gateway.results;
 
 import org.apache.streampark.gateway.OperationStatus;
 
-import jdk.internal.jline.internal.Nullable;
 import lombok.AllArgsConstructor;
+
+import javax.annotation.Nullable;
 
 /** Information of the {@code Operation}. */
 @AllArgsConstructor

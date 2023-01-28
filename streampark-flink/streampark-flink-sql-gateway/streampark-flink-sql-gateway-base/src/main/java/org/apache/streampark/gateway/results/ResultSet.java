@@ -18,7 +18,7 @@
 
 package org.apache.streampark.gateway.results;
 
-import jdk.internal.jline.internal.Nullable;
+import javax.annotation.Nullable;
 
 import java.util.List;
 
