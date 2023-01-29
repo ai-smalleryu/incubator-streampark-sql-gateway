@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.streampark.gateway.flink.client;
+package org.apache.streampark.gateway.flink;
 
 import org.apache.streampark.gateway.flink.client.dto.OpenSessionRequestBody;
 import org.apache.streampark.gateway.flink.client.dto.OpenSessionResponseBody;
@@ -32,11 +32,6 @@ public class FlinkSqlGateway {
   public static DefaultApi sqlGatewayApi(String basePath) {
     ApiClient client = new ApiClient();
     client.updateBaseUri(basePath);
-    return new DefaultApi(client);
-  }
-
-  public static DefaultApi sqlGatewayApi() {
-    ApiClient client = new ApiClient();
     return new DefaultApi(client);
   }
 

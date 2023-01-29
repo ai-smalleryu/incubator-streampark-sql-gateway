@@ -15,9 +15,8 @@
  * limitations under the License.
  */
 
-package org.apache.streampark.gateway.flink.client.example;
+package org.apache.streampark.gateway.flink;
 
-import org.apache.streampark.gateway.flink.client.FlinkSqlGateway;
 import org.apache.streampark.gateway.flink.client.dto.ExecuteStatementRequestBody;
 import org.apache.streampark.gateway.flink.client.dto.ExecuteStatementResponseBody;
 import org.apache.streampark.gateway.flink.client.dto.OpenSessionRequestBody;

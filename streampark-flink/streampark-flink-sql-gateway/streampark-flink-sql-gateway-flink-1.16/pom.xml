@@ -81,6 +81,7 @@
             <version>${junit-version}</version>
             <scope>test</scope>
         </dependency>
+
     </dependencies>
 
     <build>
@@ -101,6 +102,8 @@
                             <apiPackage>org.apache.streampark.gateway.flink.client.rest.v1</apiPackage>
                             <invokerPackage>org.apache.streampark.gateway.flink.client.rest</invokerPackage>
                             <modelPackage>org.apache.streampark.gateway.flink.client.dto</modelPackage>
+                            <generateApiTests>false</generateApiTests>
+                            <generateModelTests>false</generateModelTests>
                             <configOptions>
                                 <sourceFolder>src/gen/java/main</sourceFolder>
                             </configOptions>

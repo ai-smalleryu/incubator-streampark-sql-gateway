@@ -26,7 +26,7 @@ public class FakeSqlGatewayService implements SqlGatewayService {
   private FakeSqlGatewayService() {}
 
   @Override
-  public GatewayInfo getGatewayInfo() {
+  public GatewayInfo getGatewayInfo() throws SqlGatewayException {
     throw new UnsupportedOperationException();
   }
 

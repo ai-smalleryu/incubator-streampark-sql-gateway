@@ -25,7 +25,7 @@ public interface SqlGatewayService {
   // Info API
   // -------------------------------------------------------------------------------------------
 
-  GatewayInfo getGatewayInfo();
+  GatewayInfo getGatewayInfo() throws SqlGatewayException;
 
   // -------------------------------------------------------------------------------------------
   // Session Management
