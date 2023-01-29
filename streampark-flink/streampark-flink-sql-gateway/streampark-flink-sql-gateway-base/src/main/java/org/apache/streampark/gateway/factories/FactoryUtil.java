@@ -13,9 +13,9 @@ import java.util.stream.Collectors;
 /** Factory utils for {@link Factory}. */
 public class FactoryUtil {
 
-  static String DEFAULT_IDENTIFIER = "default";
+  private static final String DEFAULT_IDENTIFIER = "default";
   private static final Logger LOG = LoggerFactory.getLogger(FactoryUtil.class);
-  public static final ConfigOption<String> SQL_GATEWAY_ENDPOINT_TYPE =
+  public static final ConfigOption<String> SQL_GATEWAY_SERVICE_TYPE =
       new ConfigOption<String>(
           "streampark.sql-gateway.service",
           null,

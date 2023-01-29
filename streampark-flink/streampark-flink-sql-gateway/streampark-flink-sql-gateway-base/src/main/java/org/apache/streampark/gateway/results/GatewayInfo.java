@@ -23,9 +23,9 @@ import org.apache.streampark.gateway.service.SqlGatewayService;
 /** Info to describe the {@link SqlGatewayService}. */
 public interface GatewayInfo {
 
-  /** Returns the gateway endpoint type. */
-  String getEndpointType();
+  /** Returns the gateway service type. */
+  String getServiceType();
 
-  /** Returns the gateway endpoint verison. */
+  /** Returns the gateway service version. */
   String getVersion();
 }

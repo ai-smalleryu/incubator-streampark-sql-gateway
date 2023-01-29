@@ -30,20 +30,18 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.apache.streampark.gateway.factories.FactoryUtil.SQL_GATEWAY_ENDPOINT_TYPE;
+import static org.apache.streampark.gateway.factories.FactoryUtil.SQL_GATEWAY_SERVICE_TYPE;
 
 /** Util to discover the {@link SqlGatewayService}. */
 public class SqlGatewayServiceFactoryUtils {
 
   /**
-   * Attempts to discover the appropriate endpoint factory and creates the instance of the
-   * endpoints.
+   * Attempts to discover the appropriate service factory and creates the instance of the services.
    */
-  public static List<SqlGatewayService> createSqlGatewayService(
-      Map<String, String> configuration) {
+  public static List<SqlGatewayService> createSqlGatewayService(Map<String, String> configuration) {
 
     String identifiersStr =
-        Optional.ofNullable(configuration.get(SQL_GATEWAY_ENDPOINT_TYPE.key()))
+        Optional.ofNullable(configuration.get(SQL_GATEWAY_SERVICE_TYPE.key()))
             .map(
                 idStr -> {
                   if (idStr.trim().isEmpty()) {
@@ -55,20 +53,20 @@ public class SqlGatewayServiceFactoryUtils {
                 () ->
                     new ValidationException(
                         String.format(
-                            "Endpoint options do not contain an option key '%s' for discovering an endpoint.",
-                            SQL_GATEWAY_ENDPOINT_TYPE.key())));
+                            "Service options do not contain an option key '%s' for discovering an service.",
+                            SQL_GATEWAY_SERVICE_TYPE.key())));
 
     List<String> identifiers = Arrays.asList(identifiersStr.split(";"));
 
     if (identifiers.isEmpty()) {
       throw new ValidationException(
           String.format(
-              "Endpoint options do not contain an option key '%s' for discovering an endpoint.",
-              SQL_GATEWAY_ENDPOINT_TYPE.key()));
+              "Service options do not contain an option key '%s' for discovering an service.",
+              SQL_GATEWAY_SERVICE_TYPE.key()));
     }
     validateSpecifiedServicesAreUnique(identifiers);
 
-    List<SqlGatewayService> endpoints = new ArrayList<>();
+    List<SqlGatewayService> services = new ArrayList<>();
     for (String identifier : identifiers) {
       final SqlGatewayServiceFactory factory =
           FactoryUtil.discoverFactory(
@@ -76,22 +74,22 @@ public class SqlGatewayServiceFactoryUtils {
               SqlGatewayServiceFactory.class,
               identifier);
 
-      endpoints.add(
-          factory.createSqlGatewayService(new DefaultEndpointFactoryContext(getEndpointConfig())));
+      services.add(
+          factory.createSqlGatewayService(new DefaultServiceFactoryContext(getServiceConfig())));
     }
-    return endpoints;
+    return services;
   }
 
-  public static Map<String, String> getEndpointConfig() {
+  public static Map<String, String> getServiceConfig() {
     return new HashMap<>();
   }
 
   /** The default context of {@link SqlGatewayServiceFactory}. */
-  public static class DefaultEndpointFactoryContext implements SqlGatewayServiceFactory.Context {
+  public static class DefaultServiceFactoryContext implements SqlGatewayServiceFactory.Context {
 
     private final Map<String, String> gateWayServiceOptions;
 
-    public DefaultEndpointFactoryContext(Map<String, String> endpointConfig) {
+    public DefaultServiceFactoryContext(Map<String, String> endpointConfig) {
       this.gateWayServiceOptions = endpointConfig;
     }
 
@@ -108,9 +106,9 @@ public class SqlGatewayServiceFactoryUtils {
       if (uniqueIdentifiers.contains(identifier)) {
         throw new ValidationException(
             String.format(
-                "Get the duplicate endpoint identifier '%s' for the option '%s'. "
-                    + "Please keep the specified endpoint identifier unique.",
-                identifier, SQL_GATEWAY_ENDPOINT_TYPE.key()));
+                "Get the duplicate service identifier '%s' for the option '%s'. "
+                    + "Please keep the specified service identifier unique.",
+                identifier, SQL_GATEWAY_SERVICE_TYPE.key()));
       }
       uniqueIdentifiers.add(identifier);
     }
