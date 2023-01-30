@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("flink/sqlWorkBench")
 public class SqlWorkBenchController {
-  private SqlWorkBenchService sqlWorkBenchService;
+  private final SqlWorkBenchService sqlWorkBenchService;
 
   public SqlWorkBenchController(SqlWorkBenchService sqlWorkBenchService) {
     this.sqlWorkBenchService = sqlWorkBenchService;
