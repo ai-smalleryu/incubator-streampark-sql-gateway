@@ -24,6 +24,7 @@ import java.util.Set;
 public interface Factory {
   String factoryIdentifier();
 
+  // todo Check gateway service config option validated.
   Set<ConfigOption<?>> requiredOptions();
 
   Set<ConfigOption<?>> optionalOptions();

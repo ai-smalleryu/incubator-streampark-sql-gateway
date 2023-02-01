@@ -47,7 +47,7 @@ public class FlinkSqlGatewayImpl implements SqlGatewayService {
 
   public FlinkSqlGatewayImpl(String baseUri) {
     ApiClient client = new ApiClient();
-    client.updateBaseUri(baseUri);
+    client.setBasePath(baseUri);
     defaultApi = new DefaultApi(client);
   }
 
@@ -56,7 +56,7 @@ public class FlinkSqlGatewayImpl implements SqlGatewayService {
     GetInfoResponseBody info = null;
     try {
       info = defaultApi.getInfo();
-      return new MyGatewayInfo(info);
+      return new GatewayInfo(info.getProductName(), info.getVersion());
     } catch (ApiException e) {
       throw new SqlGatewayException("Flink native SqlGateWay getGatewayInfo failed!", e);
     }
@@ -160,24 +160,5 @@ public class FlinkSqlGatewayImpl implements SqlGatewayService {
   public List<String> completeStatement(SessionHandle sessionHandle, String statement, int position)
       throws SqlGatewayException {
     return null;
-  }
-
-  private static class MyGatewayInfo implements GatewayInfo {
-
-    private final GetInfoResponseBody info;
-
-    public MyGatewayInfo(GetInfoResponseBody info) {
-      this.info = info;
-    }
-
-    @Override
-    public String getServiceType() {
-      return info.getProductName();
-    }
-
-    @Override
-    public String getVersion() {
-      return info.getVersion();
-    }
   }
 }

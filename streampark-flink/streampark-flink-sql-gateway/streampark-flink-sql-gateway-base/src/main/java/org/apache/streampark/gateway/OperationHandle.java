@@ -17,13 +17,42 @@
 
 package org.apache.streampark.gateway;
 
-import lombok.Data;
-
+import java.io.Serializable;
+import java.util.Objects;
 import java.util.UUID;
 
 /** {@link OperationHandle} to index the {@code Operation}. */
-@Data
-public class OperationHandle {
+public class OperationHandle implements Serializable {
 
   private final UUID identifier;
+
+  public OperationHandle(UUID identifier) {
+    this.identifier = identifier;
+  }
+
+  public UUID getIdentifier() {
+    return identifier;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    OperationHandle that = (OperationHandle) o;
+    return Objects.equals(identifier, that.identifier);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(identifier);
+  }
+
+  @Override
+  public String toString() {
+    return "OperationHandle{" + "identifier=" + identifier + '}';
+  }
 }

@@ -19,24 +19,22 @@ package org.apache.streampark.gateway.results;
 
 import javax.annotation.Nullable;
 
+import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
-/**
- * A {@code ResultSet} represents the collection of the results. This interface defines the methods
- * that can be used on the ResultSet.
- */
-public interface ResultSet {
+/** An implementation of {@link ResultSet}. */
+public class ResultSet implements Serializable {
 
-  /** Get the type of the results, which may indicate the result is EOS or has data. */
-  ResultType getResultType();
+  /** The type of the results, which may indicate the result is EOS or has data. */
+  private final ResultType resultType;
 
   /**
    * The token indicates the next batch of the data.
    *
    * <p>When the token is null, it means all the data has been fetched.
    */
-  @Nullable
-  Long getNextToken();
+  @Nullable private final Long nextToken;
 
   /**
    * The schema of the data.
@@ -54,26 +52,115 @@ public interface ResultSet {
    * +- -----------+-------------+----------+
    * </pre>
    */
-  ResultSchemaInfo getResultSchema();
+  private final ResultSchemaInfo resultSchema;
 
   /** All the data in the current results. */
-  List<RowData> getData();
+  private final List<RowData> data;
 
   /** Indicates that whether the result is for a query. */
-  boolean isQueryResult();
-
+  private final boolean isQueryResult;
   /**
    * If the statement was submitted to a client, returns the JobID which uniquely identifies the
    * job. Otherwise, returns null.
    */
-  @Nullable
-  JobID getJobID();
+  @Nullable private final JobID jobID;
 
   /** Gets the result kind of the result. */
-  ResultKind getResultKind();
+  private final ResultKind resultKind;
+
+  public ResultSet(
+      ResultType resultType,
+      @Nullable Long nextToken,
+      ResultSchemaInfo resultSchema,
+      List<RowData> data,
+      boolean isQueryResult,
+      @Nullable JobID jobID,
+      ResultKind resultKind) {
+    this.resultType = resultType;
+    this.nextToken = nextToken;
+    this.resultSchema = resultSchema;
+    this.data = data;
+    this.isQueryResult = isQueryResult;
+    this.jobID = jobID;
+    this.resultKind = resultKind;
+  }
+
+  public ResultType getResultType() {
+    return resultType;
+  }
+
+  @Nullable
+  public Long getNextToken() {
+    return nextToken;
+  }
+
+  public ResultSchemaInfo getResultSchema() {
+    return resultSchema;
+  }
+
+  public List<RowData> getData() {
+    return data;
+  }
+
+  public boolean isQueryResult() {
+    return isQueryResult;
+  }
+
+  @Nullable
+  public JobID getJobID() {
+    return jobID;
+  }
+
+  public ResultKind getResultKind() {
+    return resultKind;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    ResultSet resultSet = (ResultSet) o;
+    return isQueryResult == resultSet.isQueryResult
+        && resultType == resultSet.resultType
+        && Objects.equals(nextToken, resultSet.nextToken)
+        && Objects.equals(resultSchema, resultSet.resultSchema)
+        && Objects.equals(data, resultSet.data)
+        && Objects.equals(jobID, resultSet.jobID)
+        && resultKind == resultSet.resultKind;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+        resultType, nextToken, resultSchema, data, isQueryResult, jobID, resultKind);
+  }
+
+  @Override
+  public String toString() {
+    return "ResultSet{"
+        + "resultType="
+        + resultType
+        + ", nextToken="
+        + nextToken
+        + ", resultSchema="
+        + resultSchema
+        + ", data="
+        + data
+        + ", isQueryResult="
+        + isQueryResult
+        + ", jobID="
+        + jobID
+        + ", resultKind="
+        + resultKind
+        + '}';
+  }
 
   /** Describe the kind of the result. */
-  enum ResultType {
+  public enum ResultType {
     /** Indicate the result is not ready. */
     NOT_READY,
 

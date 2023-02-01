@@ -17,4 +17,6 @@
 
 package org.apache.streampark.gateway.results;
 
-public class StreamParkEngineConfig {}
+import java.io.Serializable;
+
+public class StreamParkEngineConfig implements Serializable {}

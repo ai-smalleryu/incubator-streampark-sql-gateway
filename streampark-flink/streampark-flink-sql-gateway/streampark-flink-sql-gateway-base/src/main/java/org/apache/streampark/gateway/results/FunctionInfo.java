@@ -17,7 +17,6 @@
 
 package org.apache.streampark.gateway.results;
 
-import lombok.Data;
+import java.io.Serializable;
 
-@Data
-public class FunctionInfo {}
+public class FunctionInfo implements Serializable {}

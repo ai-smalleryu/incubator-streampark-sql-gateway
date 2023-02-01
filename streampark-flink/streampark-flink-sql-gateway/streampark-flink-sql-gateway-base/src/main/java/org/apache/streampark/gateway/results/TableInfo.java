@@ -17,13 +17,46 @@
 
 package org.apache.streampark.gateway.results;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import java.io.Serializable;
+import java.util.Objects;
 
 /** Information of the table or view. */
-@AllArgsConstructor
-@Data
-public class TableInfo {
+public class TableInfo implements Serializable {
   private final ObjectIdentifier identifier;
   private final TableKind tableKind;
+
+  public TableInfo(ObjectIdentifier identifier, TableKind tableKind) {
+    this.identifier = identifier;
+    this.tableKind = tableKind;
+  }
+
+  public ObjectIdentifier getIdentifier() {
+    return identifier;
+  }
+
+  public TableKind getTableKind() {
+    return tableKind;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    TableInfo tableInfo = (TableInfo) o;
+    return Objects.equals(identifier, tableInfo.identifier) && tableKind == tableInfo.tableKind;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(identifier, tableKind);
+  }
+
+  @Override
+  public String toString() {
+    return "TableInfo{" + "identifier=" + identifier + ", tableKind=" + tableKind + '}';
+  }
 }

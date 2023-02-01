@@ -24,5 +24,5 @@ public enum FetchOrientation {
   FETCH_NEXT,
 
   /** Fetch the prior results. */
-  FETCH_PRIOR;
+  FETCH_PRIOR
 }

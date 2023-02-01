@@ -31,7 +31,7 @@ public class FlinkSqlGateway {
 
   public static DefaultApi sqlGatewayApi(String basePath) {
     ApiClient client = new ApiClient();
-    client.updateBaseUri(basePath);
+    client.setBasePath(basePath);
     return new DefaultApi(client);
   }
 

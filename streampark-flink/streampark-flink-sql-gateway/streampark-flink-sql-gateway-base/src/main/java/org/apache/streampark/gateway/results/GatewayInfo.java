@@ -19,12 +19,57 @@ package org.apache.streampark.gateway.results;
 
 import org.apache.streampark.gateway.service.SqlGatewayService;
 
+import java.io.Serializable;
+import java.util.Objects;
+
 /** Info to describe the {@link SqlGatewayService}. */
-public interface GatewayInfo {
+public class GatewayInfo implements Serializable {
 
-  /** Returns the gateway service type. */
-  String getServiceType();
+  /** Gateway service type. */
+  public final String serviceType;
 
-  /** Returns the gateway service version. */
-  String getVersion();
+  /** Gateway service version. */
+  public final String version;
+
+  public GatewayInfo(String serviceType, String version) {
+    this.serviceType = serviceType;
+    this.version = version;
+  }
+
+  public String getServiceType() {
+    return serviceType;
+  }
+
+  public String getVersion() {
+    return version;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    GatewayInfo that = (GatewayInfo) o;
+    return Objects.equals(serviceType, that.serviceType) && Objects.equals(version, that.version);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(serviceType, version);
+  }
+
+  @Override
+  public String toString() {
+    return "GatewayInfo{"
+        + "serviceType='"
+        + serviceType
+        + '\''
+        + ", version='"
+        + version
+        + '\''
+        + '}';
+  }
 }

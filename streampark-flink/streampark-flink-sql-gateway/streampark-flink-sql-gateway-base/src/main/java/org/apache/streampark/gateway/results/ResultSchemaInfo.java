@@ -17,7 +17,6 @@
 
 package org.apache.streampark.gateway.results;
 
-import lombok.Data;
+import java.io.Serializable;
 
-@Data
-public class ResultSchemaInfo {}
+public class ResultSchemaInfo implements Serializable {}
