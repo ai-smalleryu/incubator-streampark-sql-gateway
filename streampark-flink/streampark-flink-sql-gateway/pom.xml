@@ -33,7 +33,4 @@
         <module>streampark-flink-sql-gateway-kyuubi</module>
     </modules>
 
-    <dependencies>
-    </dependencies>
-
 </project>
