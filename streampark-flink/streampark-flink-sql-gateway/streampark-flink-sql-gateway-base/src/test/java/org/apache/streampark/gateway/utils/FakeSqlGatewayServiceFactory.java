@@ -15,9 +15,43 @@
  * limitations under the License.
  */
 
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.apache.streampark.gateway.utils;
 
-import org.apache.streampark.common.conf.ConfigOption;
+import org.apache.streampark.gateway.ConfigOption;
 import org.apache.streampark.gateway.factories.SqlGatewayServiceFactory;
 import org.apache.streampark.gateway.service.SqlGatewayService;
 
@@ -29,35 +63,22 @@ import java.util.Set;
 public class FakeSqlGatewayServiceFactory implements SqlGatewayServiceFactory {
 
   public static final ConfigOption<String> HOST =
-      new ConfigOption<String>(
-          "host",
-          "localhost",
-          true,
-          String.class,
-          "The host of the Fake SQL gateway service",
-          null,
-          null,
-          null);
+      ConfigOption.key("host")
+          .stringType()
+          .noDefaultValue()
+          .withDescription("The host of the Fake SQL gateway service.");
+
   public static final ConfigOption<Integer> PORT =
-      new ConfigOption<Integer>(
-          "host",
-          8080,
-          true,
-          Integer.class,
-          "The port of the Fake SQL gateway service",
-          null,
-          null,
-          null);
+      ConfigOption.key("port")
+          .intType()
+          .noDefaultValue()
+          .withDescription("The port of the Fake SQL gateway service.");
+
   public static final ConfigOption<Integer> DESCRIPTION =
-      new ConfigOption<Integer>(
-          "host",
-          8080,
-          false,
-          Integer.class,
-          "The port of the Fake SQL gateway service",
-          null,
-          null,
-          null);
+      ConfigOption.key("description")
+          .intType()
+          .defaultValue(8080)
+          .withDescription("The Fake SQL gateway service.");
 
   @Override
   public String factoryIdentifier() {

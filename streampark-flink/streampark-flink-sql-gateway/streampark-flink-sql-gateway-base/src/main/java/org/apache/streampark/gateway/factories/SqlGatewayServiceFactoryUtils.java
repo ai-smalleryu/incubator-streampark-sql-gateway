@@ -15,8 +15,43 @@
  * limitations under the License.
  */
 
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.apache.streampark.gateway.factories;
 
+import org.apache.streampark.gateway.ConfigOption;
 import org.apache.streampark.gateway.exception.ValidationException;
 import org.apache.streampark.gateway.service.SqlGatewayService;
 
@@ -28,6 +63,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.apache.streampark.gateway.factories.FactoryUtil.SQL_GATEWAY_SERVICE_TYPE;
 
@@ -40,7 +76,7 @@ public class SqlGatewayServiceFactoryUtils {
   public static List<SqlGatewayService> createSqlGatewayService(Map<String, String> configuration) {
 
     String identifiersStr =
-        Optional.ofNullable(configuration.get(SQL_GATEWAY_SERVICE_TYPE.key()))
+        Optional.ofNullable(configuration.get(SQL_GATEWAY_SERVICE_TYPE.getKey()))
             .map(
                 idStr -> {
                   if (idStr.trim().isEmpty()) {
@@ -53,7 +89,7 @@ public class SqlGatewayServiceFactoryUtils {
                     new ValidationException(
                         String.format(
                             "Service options do not contain an option key '%s' for discovering an service.",
-                            SQL_GATEWAY_SERVICE_TYPE.key())));
+                            SQL_GATEWAY_SERVICE_TYPE.getKey())));
 
     List<String> identifiers = Arrays.asList(identifiersStr.split(";"));
 
@@ -61,7 +97,7 @@ public class SqlGatewayServiceFactoryUtils {
       throw new ValidationException(
           String.format(
               "Service options do not contain an option key '%s' for discovering an service.",
-              SQL_GATEWAY_SERVICE_TYPE.key()));
+              SQL_GATEWAY_SERVICE_TYPE.getKey()));
     }
     validateSpecifiedServicesAreUnique(identifiers);
 
@@ -77,6 +113,59 @@ public class SqlGatewayServiceFactoryUtils {
           factory.createSqlGatewayService(new DefaultServiceFactoryContext(getServiceConfig())));
     }
     return services;
+  }
+
+  public static EndpointFactoryHelper createEndpointFactoryHelper(
+      SqlGatewayServiceFactory endpointFactory, SqlGatewayServiceFactory.Context context) {
+    return new EndpointFactoryHelper(endpointFactory, context.getGateWayServiceOptions());
+  }
+
+  public static class EndpointFactoryHelper {
+
+    public final SqlGatewayServiceFactory factory;
+    public final Map<String, String> configOptions;
+
+    public EndpointFactoryHelper(
+        SqlGatewayServiceFactory factory, Map<String, String> configOptions) {
+      this.factory = factory;
+      this.configOptions = configOptions;
+    }
+
+    public void validate() {
+      validateFactoryOptions(factory.requiredOptions(), factory.optionalOptions(), configOptions);
+    }
+
+    public static void validateFactoryOptions(
+        Set<ConfigOption<?>> requiredOptions,
+        Set<ConfigOption<?>> optionalOptions,
+        Map<String, String> options) {
+      // currently Flink's options have no validation feature which is why we access them eagerly
+      // to provoke a parsing error
+
+      final List<String> missingRequiredOptions =
+          requiredOptions.stream()
+              // Templated options will never appear with their template key, so we need
+              // to ignore them as required properties here
+              .filter(option -> readOption(options, option) == null)
+              .map(ConfigOption::getKey)
+              .sorted()
+              .collect(Collectors.toList());
+
+      /*if (!missingRequiredOptions.isEmpty()) {
+        throw new ValidationException(
+            String.format(
+                "One or more required options are missing.\n\n"
+                    + "Missing required options are:\n\n"
+                    + "%s",
+                String.join("\n", missingRequiredOptions)));
+      }
+      optionalOptions.forEach(option -> readOption(options, option));*/
+    }
+
+    private static <T> T readOption(Map<String, String> options, ConfigOption<?> option) {
+      // TODO: 2023/2/13  readOption
+      return null;
+    }
   }
 
   public static Map<String, String> getServiceConfig() {
@@ -107,7 +196,7 @@ public class SqlGatewayServiceFactoryUtils {
             String.format(
                 "Get the duplicate service identifier '%s' for the option '%s'. "
                     + "Please keep the specified service identifier unique.",
-                identifier, SQL_GATEWAY_SERVICE_TYPE.key()));
+                identifier, SQL_GATEWAY_SERVICE_TYPE.getKey()));
       }
       uniqueIdentifiers.add(identifier);
     }
