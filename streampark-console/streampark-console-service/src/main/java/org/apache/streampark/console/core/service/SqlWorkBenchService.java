@@ -17,10 +17,40 @@
 
 package org.apache.streampark.console.core.service;
 
-import org.apache.streampark.console.core.entity.FlinkCluster;
+import org.apache.streampark.gateway.OperationHandle;
+import org.apache.streampark.gateway.results.GatewayInfo;
+import org.apache.streampark.gateway.results.OperationInfo;
+import org.apache.streampark.gateway.results.ResultQueryCondition;
+import org.apache.streampark.gateway.results.ResultSchemaInfo;
+import org.apache.streampark.gateway.results.ResultSet;
 import org.apache.streampark.gateway.session.SessionHandle;
 
 public interface SqlWorkBenchService {
 
-  SessionHandle openSession(FlinkCluster cluster, String serviceType);
+  SessionHandle openSession(Long flinkClusterId, String serviceType);
+
+  void closeSession(Long flinkClusterId, String sessionHandleUUIDStr);
+
+  GatewayInfo getGatewayInfo(Long flinkClusterId);
+
+  void cancelOperation(Long flinkClusterId, String sessionHandleUUIDStr, String operationId);
+
+  void closeOperation(Long flinkClusterId, String sessionHandleUUIDStr, String operationId);
+
+  OperationInfo getOperationInfo(
+      Long flinkClusterId, String sessionHandleUUIDStr, String operationId);
+
+  ResultSchemaInfo getOperationResultSchema(
+      Long flinkClusterId, String sessionHandleUUIDStr, String operationId);
+
+  OperationHandle executeStatement(
+      Long flinkClusterId, String sessionHandleUUIDStr, String statement);
+
+  ResultSet fetchResults(
+      Long flinkClusterId,
+      String sessionHandleUUIDStr,
+      String operationId,
+      ResultQueryCondition resultQueryCondition);
+
+  void heartbeat(Long flinkClusterId, String sessionHandle);
 }

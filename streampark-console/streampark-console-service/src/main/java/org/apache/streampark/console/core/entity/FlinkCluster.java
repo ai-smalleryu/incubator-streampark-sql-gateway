@@ -210,4 +210,11 @@ public class FlinkCluster implements Serializable {
     }
     return map;
   }
+
+  public String getGatewayAddress() {
+    if (ExecutionMode.YARN_SESSION.equals(this.getExecutionModeEnum())) {
+      return YarnUtils.getRMWebAppURL() + "/proxy/" + this.clusterId;
+    }
+    return this.address;
+  }
 }

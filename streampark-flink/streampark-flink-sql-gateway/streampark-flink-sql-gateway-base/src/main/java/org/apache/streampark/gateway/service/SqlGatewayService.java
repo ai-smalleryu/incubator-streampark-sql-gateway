@@ -57,6 +57,13 @@ public interface SqlGatewayService {
   SessionHandle openSession(SessionEnvironment environment) throws SqlGatewayException;
 
   /**
+   * Heartbeat for session
+   *
+   * @param sessionHandle handle to identify the Session.
+   */
+  void heartbeat(SessionHandle sessionHandle) throws SqlGatewayException;
+
+  /**
    * Close the {@code Session}.
    *
    * @param sessionHandle handle to identify the Session needs to be closed.

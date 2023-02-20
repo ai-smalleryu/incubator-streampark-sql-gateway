@@ -19,9 +19,12 @@ package org.apache.streampark.gateway.flink;
 
 import org.apache.streampark.gateway.ExecutionConfiguration;
 import org.apache.streampark.gateway.OperationHandle;
+import org.apache.streampark.gateway.OperationStatus;
 import org.apache.streampark.gateway.exception.SqlGatewayException;
+import org.apache.streampark.gateway.flink.client.dto.ExecuteStatementRequestBody;
 import org.apache.streampark.gateway.flink.client.dto.GetInfoResponseBody;
 import org.apache.streampark.gateway.flink.client.dto.OpenSessionRequestBody;
+import org.apache.streampark.gateway.flink.client.dto.OperationStatusResponseBody;
 import org.apache.streampark.gateway.flink.client.rest.ApiClient;
 import org.apache.streampark.gateway.flink.client.rest.ApiException;
 import org.apache.streampark.gateway.flink.client.rest.v1.DefaultApi;
@@ -76,6 +79,17 @@ public class FlinkSqlGatewayImpl implements SqlGatewayService {
   }
 
   @Override
+  public void heartbeat(SessionHandle sessionHandle) throws SqlGatewayException {
+    try {
+      defaultApi.triggerSession(
+          new org.apache.streampark.gateway.flink.client.dto.SessionHandle()
+              .identifier(sessionHandle.getIdentifier()));
+    } catch (ApiException e) {
+      throw new SqlGatewayException("Flink native SqlGateWay heartbeat failed!", e);
+    }
+  }
+
+  @Override
   public void closeSession(SessionHandle sessionHandle) throws SqlGatewayException {
     try {
       defaultApi.closeSession(sessionHandle.getIdentifier());
@@ -86,16 +100,42 @@ public class FlinkSqlGatewayImpl implements SqlGatewayService {
 
   @Override
   public void cancelOperation(SessionHandle sessionHandle, OperationHandle operationHandle)
-      throws SqlGatewayException {}
+      throws SqlGatewayException {
+    try {
+      defaultApi.cancelOperation(
+          new org.apache.streampark.gateway.flink.client.dto.SessionHandle()
+              .identifier(sessionHandle.getIdentifier()),
+          new org.apache.streampark.gateway.flink.client.dto.OperationHandle()
+              .identifier(operationHandle.getIdentifier()));
+    } catch (ApiException e) {
+      throw new SqlGatewayException("Flink native SqlGateWay cancelOperation failed!", e);
+    }
+  }
 
   @Override
   public void closeOperation(SessionHandle sessionHandle, OperationHandle operationHandle)
-      throws SqlGatewayException {}
+      throws SqlGatewayException {
+    try {
+      defaultApi.closeOperation(sessionHandle.getIdentifier(), operationHandle.getIdentifier());
+    } catch (ApiException e) {
+      throw new SqlGatewayException("Flink native SqlGateWay closeOperation failed!", e);
+    }
+  }
 
   @Override
   public OperationInfo getOperationInfo(
       SessionHandle sessionHandle, OperationHandle operationHandle) throws SqlGatewayException {
-    return null;
+
+    try {
+      OperationStatusResponseBody operationStatus =
+          defaultApi.getOperationStatus(
+              sessionHandle.getIdentifier(), operationHandle.getIdentifier());
+      String status = operationStatus.getStatus();
+      // TODO: 2023/2/17  need to be refined
+      return new OperationInfo(OperationStatus.RUNNING, null);
+    } catch (ApiException e) {
+      throw new SqlGatewayException("Flink native SqlGateWay closeOperation failed!", e);
+    }
   }
 
   @Override
@@ -111,6 +151,18 @@ public class FlinkSqlGatewayImpl implements SqlGatewayService {
       long executionTimeoutMs,
       ExecutionConfiguration executionConfig)
       throws SqlGatewayException {
+    try {
+      // TODO: 2023/2/17 need to be refined
+      defaultApi.executeStatement(
+          sessionHandle.getIdentifier(),
+          new ExecuteStatementRequestBody()
+              .statement(statement)
+              .executionTimeout(executionTimeoutMs)
+              .executionConfig(null));
+    } catch (ApiException e) {
+      throw new SqlGatewayException("Flink native SqlGateWay executeStatement failed!", e);
+    }
+
     return null;
   }
 
@@ -121,6 +173,17 @@ public class FlinkSqlGatewayImpl implements SqlGatewayService {
       ResultQueryCondition resultQueryCondition)
       throws SqlGatewayException {
     return null;
+    //        try {
+    //            FetchResultsResponseBody fetchResultsResponseBody = defaultApi.fetchResults(
+    //                sessionHandle.getIdentifier(),
+    //                operationHandle.getIdentifier(), resultQueryCondition.getToken());
+    //            return new ResultSet(
+    //                fetchResultsResponseBody.getResults(),
+    //                fetchResultsResponseBody.getColumns(),
+    //                fetchResultsResponseBody.getChangeFlag());
+    //        } catch (ApiException e) {
+    //            throw new RuntimeException(e);
+    //        }
   }
 
   @Override
@@ -130,6 +193,7 @@ public class FlinkSqlGatewayImpl implements SqlGatewayService {
 
   @Override
   public Set<String> listCatalogs(SessionHandle sessionHandle) throws SqlGatewayException {
+
     return null;
   }
 

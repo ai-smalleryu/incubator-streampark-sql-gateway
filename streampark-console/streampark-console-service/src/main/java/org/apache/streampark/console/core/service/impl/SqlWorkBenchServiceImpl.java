@@ -18,8 +18,16 @@
 package org.apache.streampark.console.core.service.impl;
 
 import org.apache.streampark.console.core.entity.FlinkCluster;
+import org.apache.streampark.console.core.service.FlinkClusterService;
 import org.apache.streampark.console.core.service.SqlWorkBenchService;
+import org.apache.streampark.gateway.OperationHandle;
 import org.apache.streampark.gateway.factories.SqlGatewayServiceFactoryUtils;
+import org.apache.streampark.gateway.flink.FlinkSqlGatewayServiceFactory;
+import org.apache.streampark.gateway.results.GatewayInfo;
+import org.apache.streampark.gateway.results.OperationInfo;
+import org.apache.streampark.gateway.results.ResultQueryCondition;
+import org.apache.streampark.gateway.results.ResultSchemaInfo;
+import org.apache.streampark.gateway.results.ResultSet;
 import org.apache.streampark.gateway.service.SqlGatewayService;
 import org.apache.streampark.gateway.session.SessionEnvironment;
 import org.apache.streampark.gateway.session.SessionHandle;
@@ -31,25 +39,114 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Slf4j
 @Service
 public class SqlWorkBenchServiceImpl implements SqlWorkBenchService {
 
+  private FlinkClusterService flinkClusterService;
+
+  public SqlWorkBenchServiceImpl(FlinkClusterService flinkClusterService) {
+    this.flinkClusterService = flinkClusterService;
+  }
+
+  /** Get SqlGatewayService instance by flinkClusterId */
+  private SqlGatewayService getSqlGateWayService(Long flinkClusterId) {
+    FlinkCluster flinkCluster = flinkClusterService.getById(flinkClusterId);
+
+    Map<String, String> config = new HashMap<>(8);
+    config.put("streampark.sql-gateway.service", flinkCluster.getVersionId().toString());
+    config.put(FlinkSqlGatewayServiceFactory.BASE_URI.getKey(), flinkCluster.getGatewayAddress());
+
+    // TODO: 2023/1/30 convert flinkClusterId to config map
+    List<SqlGatewayService> actual = SqlGatewayServiceFactoryUtils.createSqlGatewayService(config);
+    return actual.get(0);
+  }
+
   @Override
-  public SessionHandle openSession(FlinkCluster cluster, String serviceType) {
-    SqlGatewayService sqlGateWayService = getSqlGateWayService();
+  public GatewayInfo getGatewayInfo(Long flinkClusterId) {
+    SqlGatewayService sqlGateWayService = getSqlGateWayService(flinkClusterId);
+    return sqlGateWayService.getGatewayInfo();
+  }
+
+  @Override
+  public SessionHandle openSession(Long flinkClusterId, String serviceType) {
+    SqlGatewayService sqlGateWayService = getSqlGateWayService(flinkClusterId);
     return sqlGateWayService.openSession(
         new SessionEnvironment("test-adien", null, Collections.emptyMap()));
   }
 
-  private static SqlGatewayService getSqlGateWayService() {
-    Map<String, String> config = new HashMap<>();
-    config.put("streampark.sql-gateway.service", "flink1.16;");
+  @Override
+  public void closeSession(Long flinkClusterId, String sessionHandleUUIDStr) {
+    SqlGatewayService sqlGateWayService = getSqlGateWayService(flinkClusterId);
+    sqlGateWayService.closeSession(new SessionHandle(UUID.fromString(sessionHandleUUIDStr)));
+  }
 
-    // TODO: 2023/1/30 convert cluster to config map
+  @Override
+  public void cancelOperation(
+      Long flinkClusterId, String sessionHandleUUIDStr, String operationId) {
 
-    List<SqlGatewayService> actual = SqlGatewayServiceFactoryUtils.createSqlGatewayService(config);
-    return actual.get(0);
+    getSqlGateWayService(flinkClusterId)
+        .cancelOperation(
+            new SessionHandle(UUID.fromString(sessionHandleUUIDStr)),
+            new OperationHandle(UUID.fromString(operationId)));
+  }
+
+  @Override
+  public void closeOperation(Long flinkClusterId, String sessionHandleUUIDStr, String operationId) {
+
+    getSqlGateWayService(flinkClusterId)
+        .closeOperation(
+            new SessionHandle(UUID.fromString(sessionHandleUUIDStr)),
+            new OperationHandle(UUID.fromString(operationId)));
+  }
+
+  @Override
+  public OperationInfo getOperationInfo(
+      Long flinkClusterId, String sessionHandleUUIDStr, String operationId) {
+
+    return getSqlGateWayService(flinkClusterId)
+        .getOperationInfo(
+            new SessionHandle(UUID.fromString(sessionHandleUUIDStr)),
+            new OperationHandle(UUID.fromString(operationId)));
+  }
+
+  @Override
+  public ResultSchemaInfo getOperationResultSchema(
+      Long flinkClusterId, String sessionHandleUUIDStr, String operationId) {
+
+    return getSqlGateWayService(flinkClusterId)
+        .getOperationResultSchema(
+            new SessionHandle(UUID.fromString(sessionHandleUUIDStr)),
+            new OperationHandle(UUID.fromString(operationId)));
+  }
+
+  @Override
+  public OperationHandle executeStatement(
+      Long flinkClusterId, String sessionHandleUUIDStr, String statement) {
+
+    return getSqlGateWayService(flinkClusterId)
+        .executeStatement(
+            new SessionHandle(UUID.fromString(sessionHandleUUIDStr)), statement, 10000L, null);
+  }
+
+  @Override
+  public ResultSet fetchResults(
+      Long flinkClusterId,
+      String sessionHandleUUIDStr,
+      String operationId,
+      ResultQueryCondition resultQueryCondition) {
+    return getSqlGateWayService(flinkClusterId)
+        .fetchResults(
+            new SessionHandle(UUID.fromString(sessionHandleUUIDStr)),
+            new OperationHandle(UUID.fromString(operationId)),
+            resultQueryCondition);
+  }
+
+  @Override
+  public void heartbeat(Long flinkClusterId, String sessionHandle) {
+    getSqlGateWayService(flinkClusterId)
+        .heartbeat(new SessionHandle(UUID.fromString(sessionHandle)));
   }
 }

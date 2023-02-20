@@ -57,6 +57,7 @@ public class FlinkSqlGatewayServiceFactory implements SqlGatewayServiceFactory {
     SqlGatewayServiceFactoryUtils.EndpointFactoryHelper helper =
         SqlGatewayServiceFactoryUtils.createEndpointFactoryHelper(this, context);
     helper.validate();
-    return new FlinkSqlGatewayImpl("localhost:8080");
+    String baseUri = context.getGateWayServiceOptions().get(BASE_URI.getKey());
+    return new FlinkSqlGatewayImpl(baseUri);
   }
 }
