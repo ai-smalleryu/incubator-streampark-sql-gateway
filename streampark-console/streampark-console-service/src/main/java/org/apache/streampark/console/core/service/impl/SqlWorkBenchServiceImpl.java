@@ -71,7 +71,7 @@ public class SqlWorkBenchServiceImpl implements SqlWorkBenchService {
   }
 
   @Override
-  public SessionHandle openSession(Long flinkClusterId, String serviceType) {
+  public SessionHandle openSession(Long flinkClusterId) {
     SqlGatewayService sqlGateWayService = getSqlGateWayService(flinkClusterId);
     return sqlGateWayService.openSession(
         new SessionEnvironment("test-adien", null, Collections.emptyMap()));

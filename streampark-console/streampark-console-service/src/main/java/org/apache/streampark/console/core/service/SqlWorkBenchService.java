@@ -27,7 +27,7 @@ import org.apache.streampark.gateway.session.SessionHandle;
 
 public interface SqlWorkBenchService {
 
-  SessionHandle openSession(Long flinkClusterId, String serviceType);
+  SessionHandle openSession(Long flinkClusterId);
 
   void closeSession(Long flinkClusterId, String sessionHandleUUIDStr);
 

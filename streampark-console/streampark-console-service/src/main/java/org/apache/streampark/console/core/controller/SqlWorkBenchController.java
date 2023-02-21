@@ -57,7 +57,7 @@ public class SqlWorkBenchController {
 
   @PostMapping("sessions")
   public RestResponse openSession(@PathVariable Long flinkClusterId, String serviceType) {
-    SessionHandle sessionHandle = sqlWorkBenchService.openSession(flinkClusterId, serviceType);
+    SessionHandle sessionHandle = sqlWorkBenchService.openSession(flinkClusterId);
     return RestResponse.success(sessionHandle);
   }
 

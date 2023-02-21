@@ -417,9 +417,24 @@ public class ApplicationController {
 
   @ApiOperation(value = "Read flink on k8s deploy log")
   @ApiImplicitParams({
-    @ApiImplicitParam(name = "id", value = "app id"),
-    @ApiImplicitParam(name = "offset", value = "number of log lines offset"),
-    @ApiImplicitParam(name = "limit", value = "number of log lines loaded at once")
+    @ApiImplicitParam(
+        name = "id",
+        value = "app id",
+        required = true,
+        paramType = "query",
+        dataTypeClass = Long.class),
+    @ApiImplicitParam(
+        name = "offset",
+        value = "number of log lines offset",
+        required = true,
+        paramType = "query",
+        dataTypeClass = Integer.class),
+    @ApiImplicitParam(
+        name = "limit",
+        value = "number of log lines loaded at once",
+        required = true,
+        paramType = "query",
+        dataTypeClass = Integer.class)
   })
   @PostMapping(value = "k8sStartLog")
   public RestResponse k8sStartLog(Long id, Integer offset, Integer limit) throws Exception {

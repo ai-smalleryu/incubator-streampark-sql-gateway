@@ -61,6 +61,11 @@ public class MockedSqlGatewayService implements SqlGatewayService {
   }
 
   @Override
+  public void heartbeat(SessionHandle sessionHandle) throws SqlGatewayException {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
   public void closeSession(SessionHandle sessionHandle) throws SqlGatewayException {
     throw new UnsupportedOperationException();
   }
