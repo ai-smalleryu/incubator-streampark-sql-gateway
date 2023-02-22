@@ -20,16 +20,12 @@ package org.apache.streampark.console.core.controller;
 import org.apache.streampark.console.base.domain.RestResponse;
 import org.apache.streampark.console.core.annotation.ApiAccess;
 import org.apache.streampark.console.core.service.SqlWorkBenchService;
-import org.apache.streampark.gateway.results.FetchOrientation;
 import org.apache.streampark.gateway.results.ResultQueryCondition;
 import org.apache.streampark.gateway.session.SessionHandle;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.core.util.JsonUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -54,6 +50,7 @@ public class SqlWorkBenchController {
   // -------------------------------------------------------------------------------------------
   // Info API
   // -------------------------------------------------------------------------------------------
+
   @ApiAccess
   @ApiOperation(value = "Get gateway info", notes = "Get gateway info", tags = "FLINK_GATEWAY_TAG")
   @PostMapping("getGatewayInfo")
@@ -64,6 +61,7 @@ public class SqlWorkBenchController {
   // -------------------------------------------------------------------------------------------
   // Session Management
   // -------------------------------------------------------------------------------------------
+
   @ApiAccess
   @ApiOperation(value = "Open sessions", notes = "Open sessions", tags = "FLINK_GATEWAY_TAG")
   @PostMapping("sessions")
@@ -181,22 +179,4 @@ public class SqlWorkBenchController {
   // -------------------------------------------------------------------------------------------
   // TODO: 2023/2/17  need to be implemented
 
-  public static void main(String[] args) {
-    ResultQueryCondition obj = new ResultQueryCondition(FetchOrientation.FETCH_NEXT, 1, 2);
-
-    // Create an instance of the Jackson ObjectMapper
-    ObjectMapper mapper = new ObjectMapper();
-
-    // Use the writeValueAsString() method to serialize the object to a JSON string
-    try {
-      String json = mapper.writeValueAsString(obj);
-      System.out.println(json);
-    } catch (JsonProcessingException e) {
-      e.printStackTrace();
-    }
-
-    JsonUtils jsonUtils = new JsonUtils();
-    System.out.println(new ResultQueryCondition(FetchOrientation.FETCH_NEXT, 1, 2).toString());
-    ;
-  }
 }

@@ -190,7 +190,7 @@ public class FlinkSqlGatewayImpl implements SqlGatewayService {
     try {
 
       List<RowData> data = new ArrayList<>();
-      Column resultSchemaInfo = getOperationResultSchema(sessionHandle, operationHandle);
+      List<Column> columns = new ArrayList<>();
       FetchResultsResponseBody fetchResultsResponseBody =
           defaultApi.fetchResults(
               sessionHandle.getIdentifier(),
@@ -210,7 +210,7 @@ public class FlinkSqlGatewayImpl implements SqlGatewayService {
           resultType = ResultSet.ResultType.EOS;
           break;
         default:
-          throw new RuntimeException("Unknown result type: " + resultTypeStr);
+          throw new SqlGatewayException("Unknown result type: " + resultTypeStr);
       }
       Long nextToken = null;
       if (fetchResultsResponseBody.getNextResultUri() != null) {
@@ -220,12 +220,24 @@ public class FlinkSqlGatewayImpl implements SqlGatewayService {
 
       org.apache.streampark.gateway.flink.client.dto.ResultSet results =
           fetchResultsResponseBody.getResults();
+
       List<ResultSetColumnsInner> resultsColumns = results.getColumns();
       List<ResultSetDataInner> resultsData = results.getData();
 
-      resultsColumns.forEach(column -> {});
+      resultsColumns.forEach(
+          column ->
+              columns.add(
+                  new Column(
+                      column.getName(), column.getLogicalType().toJson(), column.getComment())));
 
-      return new ResultSet(resultType, nextToken, null, data, true, null, ResultKind.SUCCESS);
+      resultsData.forEach(row -> data.add(new RowData(row.getKind().getValue(), row.getFields())));
+
+      ResultKind resultKind =
+          columns.size() == 1 && columns.get(0).getName().equals("result")
+              ? ResultKind.SUCCESS
+              : ResultKind.SUCCESS_WITH_CONTENT;
+
+      return new ResultSet(resultType, nextToken, columns, data, true, null, resultKind);
     } catch (ApiException e) {
       throw new RuntimeException(e);
     }
