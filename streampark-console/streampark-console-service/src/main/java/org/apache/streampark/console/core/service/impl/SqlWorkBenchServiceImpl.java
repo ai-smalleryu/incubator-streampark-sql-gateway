@@ -18,15 +18,18 @@
 package org.apache.streampark.console.core.service.impl;
 
 import org.apache.streampark.console.core.entity.FlinkCluster;
+import org.apache.streampark.console.core.entity.FlinkEnv;
 import org.apache.streampark.console.core.service.FlinkClusterService;
+import org.apache.streampark.console.core.service.FlinkEnvService;
 import org.apache.streampark.console.core.service.SqlWorkBenchService;
 import org.apache.streampark.gateway.OperationHandle;
+import org.apache.streampark.gateway.factories.FactoryUtil;
 import org.apache.streampark.gateway.factories.SqlGatewayServiceFactoryUtils;
 import org.apache.streampark.gateway.flink.FlinkSqlGatewayServiceFactory;
+import org.apache.streampark.gateway.results.Column;
 import org.apache.streampark.gateway.results.GatewayInfo;
 import org.apache.streampark.gateway.results.OperationInfo;
 import org.apache.streampark.gateway.results.ResultQueryCondition;
-import org.apache.streampark.gateway.results.ResultSchemaInfo;
 import org.apache.streampark.gateway.results.ResultSet;
 import org.apache.streampark.gateway.service.SqlGatewayService;
 import org.apache.streampark.gateway.session.SessionEnvironment;
@@ -45,18 +48,24 @@ import java.util.UUID;
 @Service
 public class SqlWorkBenchServiceImpl implements SqlWorkBenchService {
 
-  private FlinkClusterService flinkClusterService;
+  private final FlinkClusterService flinkClusterService;
 
-  public SqlWorkBenchServiceImpl(FlinkClusterService flinkClusterService) {
+  private final FlinkEnvService flinkEnvService;
+
+  public SqlWorkBenchServiceImpl(
+      FlinkClusterService flinkClusterService, FlinkEnvService flinkEnvService) {
     this.flinkClusterService = flinkClusterService;
+    this.flinkEnvService = flinkEnvService;
   }
 
   /** Get SqlGatewayService instance by flinkClusterId */
   private SqlGatewayService getSqlGateWayService(Long flinkClusterId) {
     FlinkCluster flinkCluster = flinkClusterService.getById(flinkClusterId);
+    FlinkEnv flinkEnv = flinkEnvService.getById(flinkCluster.getVersionId());
 
     Map<String, String> config = new HashMap<>(8);
-    config.put("streampark.sql-gateway.service", flinkCluster.getVersionId().toString());
+    config.put(
+        FactoryUtil.SQL_GATEWAY_SERVICE_TYPE.getKey(), "flink-" + flinkEnv.getLargeVersion());
     config.put(FlinkSqlGatewayServiceFactory.BASE_URI.getKey(), flinkCluster.getGatewayAddress());
 
     // TODO: 2023/1/30 convert flinkClusterId to config map
@@ -113,7 +122,7 @@ public class SqlWorkBenchServiceImpl implements SqlWorkBenchService {
   }
 
   @Override
-  public ResultSchemaInfo getOperationResultSchema(
+  public Column getOperationResultSchema(
       Long flinkClusterId, String sessionHandleUUIDStr, String operationId) {
 
     return getSqlGateWayService(flinkClusterId)

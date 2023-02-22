@@ -70,13 +70,13 @@ paths:
       description: Get the session configuration.
       operationId: getSessionConfig
       parameters:
-      - name: session_handle
-        in: path
-        description: The SessionHandle that identifies a session.
-        required: true
-        schema:
-          type: string
-          format: uuid
+        - name: session_handle
+          in: path
+          description: The SessionHandle that identifies a session.
+          required: true
+          schema:
+            type: string
+            format: uuid
       responses:
         "200":
           description: The request was successful.
@@ -88,13 +88,13 @@ paths:
       description: Closes the specific session.
       operationId: closeSession
       parameters:
-      - name: session_handle
-        in: path
-        description: The SessionHandle that identifies a session.
-        required: true
-        schema:
-          type: string
-          format: uuid
+        - name: session_handle
+          in: path
+          description: The SessionHandle that identifies a session.
+          required: true
+          schema:
+            type: string
+            format: uuid
       responses:
         "200":
           description: The request was successful.
@@ -108,12 +108,12 @@ paths:
         \ and to keep the session alive as long as configured timeout value."
       operationId: triggerSession
       parameters:
-      - name: session_handle
-        in: path
-        description: The SessionHandle that identifies a session.
-        required: true
-        schema:
-          $ref: '#/components/schemas/SessionHandle'
+        - name: session_handle
+          in: path
+          description: The SessionHandle that identifies a session.
+          required: true
+          schema:
+            $ref: '#/components/schemas/SessionHandle'
       responses:
         "200":
           description: The request was successful.
@@ -122,18 +122,18 @@ paths:
       description: Cancel the operation.
       operationId: cancelOperation
       parameters:
-      - name: session_handle
-        in: path
-        description: The SessionHandle that identifies a session.
-        required: true
-        schema:
-          $ref: '#/components/schemas/SessionHandle'
-      - name: operation_handle
-        in: path
-        description: The OperationHandle that identifies a operation.
-        required: true
-        schema:
-          $ref: '#/components/schemas/OperationHandle'
+        - name: session_handle
+          in: path
+          description: The SessionHandle that identifies a session.
+          required: true
+          schema:
+            $ref: '#/components/schemas/SessionHandle'
+        - name: operation_handle
+          in: path
+          description: The OperationHandle that identifies a operation.
+          required: true
+          schema:
+            $ref: '#/components/schemas/OperationHandle'
       responses:
         "200":
           description: The request was successful.
@@ -146,20 +146,20 @@ paths:
       description: Close the operation.
       operationId: closeOperation
       parameters:
-      - name: session_handle
-        in: path
-        description: The SessionHandle that identifies a session.
-        required: true
-        schema:
-          type: string
-          format: uuid
-      - name: operation_handle
-        in: path
-        description: The OperationHandle that identifies a operation.
-        required: true
-        schema:
-          type: string
-          format: uuid
+        - name: session_handle
+          in: path
+          description: The SessionHandle that identifies a session.
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: operation_handle
+          in: path
+          description: The OperationHandle that identifies a operation.
+          required: true
+          schema:
+            type: string
+            format: uuid
       responses:
         "200":
           description: The request was successful.
@@ -172,27 +172,27 @@ paths:
       description: Fetch results of Operation.
       operationId: fetchResults
       parameters:
-      - name: session_handle
-        in: path
-        description: The SessionHandle that identifies a session.
-        required: true
-        schema:
-          type: string
-          format: uuid
-      - name: operation_handle
-        in: path
-        description: The OperationHandle that identifies a operation.
-        required: true
-        schema:
-          type: string
-          format: uuid
-      - name: token
-        in: path
-        description: The OperationHandle that identifies a operation.
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: session_handle
+          in: path
+          description: The SessionHandle that identifies a session.
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: operation_handle
+          in: path
+          description: The OperationHandle that identifies a operation.
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: token
+          in: path
+          description: The OperationHandle that identifies a operation.
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         "200":
           description: The request was successful.
@@ -205,20 +205,20 @@ paths:
       description: Get the status of operation.
       operationId: getOperationStatus
       parameters:
-      - name: session_handle
-        in: path
-        description: The SessionHandle that identifies a session.
-        required: true
-        schema:
-          type: string
-          format: uuid
-      - name: operation_handle
-        in: path
-        description: The OperationHandle that identifies a operation.
-        required: true
-        schema:
-          type: string
-          format: uuid
+        - name: session_handle
+          in: path
+          description: The SessionHandle that identifies a session.
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: operation_handle
+          in: path
+          description: The OperationHandle that identifies a operation.
+          required: true
+          schema:
+            type: string
+            format: uuid
       responses:
         "200":
           description: The request was successful.
@@ -231,13 +231,13 @@ paths:
       description: Execute a statement.
       operationId: executeStatement
       parameters:
-      - name: session_handle
-        in: path
-        description: The SessionHandle that identifies a session.
-        required: true
-        schema:
-          type: string
-          format: uuid
+        - name: session_handle
+          in: path
+          description: The SessionHandle that identifies a session.
+          required: true
+          schema:
+            type: string
+            format: uuid
       requestBody:
         content:
           application/json:
@@ -326,35 +326,35 @@ components:
     LogicalTypeRoot:
       type: string
       enum:
-      - CHAR
-      - VARCHAR
-      - BOOLEAN
-      - BINARY
-      - VARBINARY
-      - DECIMAL
-      - TINYINT
-      - SMALLINT
-      - INTEGER
-      - BIGINT
-      - FLOAT
-      - DOUBLE
-      - DATE
-      - TIME_WITHOUT_TIME_ZONE
-      - TIMESTAMP_WITHOUT_TIME_ZONE
-      - TIMESTAMP_WITH_TIME_ZONE
-      - TIMESTAMP_WITH_LOCAL_TIME_ZONE
-      - INTERVAL_YEAR_MONTH
-      - INTERVAL_DAY_TIME
-      - ARRAY
-      - MULTISET
-      - MAP
-      - ROW
-      - DISTINCT_TYPE
-      - STRUCTURED_TYPE
-      - "NULL"
-      - RAW
-      - SYMBOL
-      - UNRESOLVED
+        - CHAR
+        - VARCHAR
+        - BOOLEAN
+        - BINARY
+        - VARBINARY
+        - DECIMAL
+        - TINYINT
+        - SMALLINT
+        - INTEGER
+        - BIGINT
+        - FLOAT
+        - DOUBLE
+        - DATE
+        - TIME_WITHOUT_TIME_ZONE
+        - TIMESTAMP_WITHOUT_TIME_ZONE
+        - TIMESTAMP_WITH_TIME_ZONE
+        - TIMESTAMP_WITH_LOCAL_TIME_ZONE
+        - INTERVAL_YEAR_MONTH
+        - INTERVAL_DAY_TIME
+        - ARRAY
+        - MULTISET
+        - MAP
+        - ROW
+        - DISTINCT_TYPE
+        - STRUCTURED_TYPE
+        - "NULL"
+        - RAW
+        - SYMBOL
+        - UNRESOLVED
     OperationHandle:
       type: object
       properties:
@@ -414,17 +414,41 @@ components:
     ResultSet:
       type: object
       properties:
-        resultType:
-          $ref: '#/components/schemas/ResultType'
-        nextToken:
-          type: integer
-          format: int64
-        resultSchema:
-          $ref: '#/components/schemas/ResolvedSchema'
+        columns:
+          type: array
+          items:
+            properties:
+              name:
+                type: string
+              logicalType:
+                type: object
+                properties:
+                  type:
+                    $ref: '#/components/schemas/LogicalTypeRoot'
+                  nullable:
+                    type: boolean
+                  length:
+                    type: integer
+                    format: int32
+                  precision:
+                    type: integer
+                    format: int32
+                  scale:
+                    type: integer
+                    format: int32
+              comment:
+                type: string
         data:
           type: array
           items:
-            $ref: '#/components/schemas/RowData'
+            type: object
+            properties:
+              kind:
+                $ref: '#/components/schemas/RowKind'
+              fields:
+                type: array
+                items:
+                  type: object
     DataType:
       type: object
       properties:
@@ -497,18 +521,18 @@ components:
     ResultType:
       type: string
       enum:
-      - NOT_READY
-      - PAYLOAD
-      - EOS
+        - NOT_READY
+        - PAYLOAD
+        - EOS
     Expression:
       type: object
     RowKind:
       type: string
       enum:
-      - INSERT
-      - UPDATE_BEFORE
-      - UPDATE_AFTER
-      - DELETE
+        - INSERT
+        - UPDATE_BEFORE
+        - UPDATE_AFTER
+        - DELETE
     OpenSessionResponseBody:
       type: object
       properties:
@@ -517,8 +541,8 @@ components:
     ConstraintType:
       type: string
       enum:
-      - PRIMARY_KEY
-      - UNIQUE_KEY
+        - PRIMARY_KEY
+        - UNIQUE_KEY
     IntermediateDataSetID:
       pattern: "[0-9a-f]{32}"
       type: string

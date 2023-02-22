@@ -52,7 +52,7 @@ public class ResultSet implements Serializable {
    * +- -----------+-------------+----------+
    * </pre>
    */
-  private final ResultSchemaInfo resultSchema;
+  private final List<Column> columns;
 
   /** All the data in the current results. */
   private final List<RowData> data;
@@ -71,14 +71,14 @@ public class ResultSet implements Serializable {
   public ResultSet(
       ResultType resultType,
       @Nullable Long nextToken,
-      ResultSchemaInfo resultSchema,
+      List<Column> columns,
       List<RowData> data,
       boolean isQueryResult,
       @Nullable JobID jobID,
       ResultKind resultKind) {
     this.resultType = resultType;
     this.nextToken = nextToken;
-    this.resultSchema = resultSchema;
+    this.columns = columns;
     this.data = data;
     this.isQueryResult = isQueryResult;
     this.jobID = jobID;
@@ -94,8 +94,8 @@ public class ResultSet implements Serializable {
     return nextToken;
   }
 
-  public ResultSchemaInfo getResultSchema() {
-    return resultSchema;
+  public List<Column> getColumns() {
+    return columns;
   }
 
   public List<RowData> getData() {
@@ -127,7 +127,7 @@ public class ResultSet implements Serializable {
     return isQueryResult == resultSet.isQueryResult
         && resultType == resultSet.resultType
         && Objects.equals(nextToken, resultSet.nextToken)
-        && Objects.equals(resultSchema, resultSet.resultSchema)
+        && Objects.equals(columns, resultSet.columns)
         && Objects.equals(data, resultSet.data)
         && Objects.equals(jobID, resultSet.jobID)
         && resultKind == resultSet.resultKind;
@@ -135,8 +135,7 @@ public class ResultSet implements Serializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-        resultType, nextToken, resultSchema, data, isQueryResult, jobID, resultKind);
+    return Objects.hash(resultType, nextToken, columns, data, isQueryResult, jobID, resultKind);
   }
 
   @Override
@@ -147,7 +146,7 @@ public class ResultSet implements Serializable {
         + ", nextToken="
         + nextToken
         + ", resultSchema="
-        + resultSchema
+        + columns
         + ", data="
         + data
         + ", isQueryResult="

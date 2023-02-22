@@ -27,6 +27,8 @@ public class ResultQueryCondition implements Serializable {
   public long token;
   public int maxRows;
 
+  public ResultQueryCondition() {}
+
   public ResultQueryCondition(FetchOrientation orientation, long token, int maxRows) {
     this.orientation = orientation;
     this.token = token;

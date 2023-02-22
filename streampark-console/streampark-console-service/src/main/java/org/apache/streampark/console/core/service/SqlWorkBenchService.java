@@ -18,10 +18,10 @@
 package org.apache.streampark.console.core.service;
 
 import org.apache.streampark.gateway.OperationHandle;
+import org.apache.streampark.gateway.results.Column;
 import org.apache.streampark.gateway.results.GatewayInfo;
 import org.apache.streampark.gateway.results.OperationInfo;
 import org.apache.streampark.gateway.results.ResultQueryCondition;
-import org.apache.streampark.gateway.results.ResultSchemaInfo;
 import org.apache.streampark.gateway.results.ResultSet;
 import org.apache.streampark.gateway.session.SessionHandle;
 
@@ -40,7 +40,7 @@ public interface SqlWorkBenchService {
   OperationInfo getOperationInfo(
       Long flinkClusterId, String sessionHandleUUIDStr, String operationId);
 
-  ResultSchemaInfo getOperationResultSchema(
+  Column getOperationResultSchema(
       Long flinkClusterId, String sessionHandleUUIDStr, String operationId);
 
   OperationHandle executeStatement(

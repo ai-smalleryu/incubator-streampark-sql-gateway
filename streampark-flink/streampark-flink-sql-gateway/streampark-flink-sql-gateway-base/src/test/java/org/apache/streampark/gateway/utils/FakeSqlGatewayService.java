@@ -20,11 +20,11 @@ package org.apache.streampark.gateway.utils;
 import org.apache.streampark.gateway.ExecutionConfiguration;
 import org.apache.streampark.gateway.OperationHandle;
 import org.apache.streampark.gateway.exception.SqlGatewayException;
+import org.apache.streampark.gateway.results.Column;
 import org.apache.streampark.gateway.results.FunctionInfo;
 import org.apache.streampark.gateway.results.GatewayInfo;
 import org.apache.streampark.gateway.results.OperationInfo;
 import org.apache.streampark.gateway.results.ResultQueryCondition;
-import org.apache.streampark.gateway.results.ResultSchemaInfo;
 import org.apache.streampark.gateway.results.ResultSet;
 import org.apache.streampark.gateway.results.TableInfo;
 import org.apache.streampark.gateway.results.TableKind;
@@ -81,7 +81,7 @@ public class FakeSqlGatewayService implements SqlGatewayService {
   }
 
   @Override
-  public ResultSchemaInfo getOperationResultSchema(
+  public Column getOperationResultSchema(
       SessionHandle sessionHandle, OperationHandle operationHandle) throws SqlGatewayException {
     throw new UnsupportedOperationException();
   }

@@ -19,6 +19,7 @@ package org.apache.streampark.gateway.flink;
 
 import org.apache.streampark.gateway.flink.client.dto.ExecuteStatementRequestBody;
 import org.apache.streampark.gateway.flink.client.dto.ExecuteStatementResponseBody;
+import org.apache.streampark.gateway.flink.client.dto.FetchResultsResponseBody;
 import org.apache.streampark.gateway.flink.client.dto.OpenSessionRequestBody;
 import org.apache.streampark.gateway.flink.client.dto.OpenSessionResponseBody;
 import org.apache.streampark.gateway.flink.client.rest.ApiException;
@@ -31,9 +32,10 @@ public class FlinkSqlGatewayExample {
   private FlinkSqlGatewayExample() {}
 
   public static void main(String[] args) throws ApiException {
-    DefaultApi api = FlinkSqlGateway.sqlGatewayApi("http://127.0.0.1:8083");
-    runOnYarn(api);
-    runOnKubernetes(api);
+    DefaultApi api = FlinkSqlGateway.sqlGatewayApi("http://192.168.20.144:8083");
+    runOnLocal(api);
+    //    runOnYarn(api);
+    //    runOnKubernetes(api);
   }
 
   private static void runOnKubernetes(DefaultApi api) throws ApiException {
@@ -143,11 +145,59 @@ public class FlinkSqlGatewayExample {
     System.out.println(executeStatementResponseBody.getOperationHandle());
   }
 
+  public static void runOnLocal(DefaultApi api) throws ApiException {
+    OpenSessionResponseBody response = api.openSession(new OpenSessionRequestBody());
+    System.out.println(response.getSessionHandle());
+
+    ExecuteStatementResponseBody statement1 =
+        api.executeStatement(
+            UUID.fromString(response.getSessionHandle()),
+            new ExecuteStatementRequestBody()
+                .statement(
+                    "CREATE TABLE datagen (\n"
+                        + " f_sequence INT,\n"
+                        + " result DECIMAL(10,3),\n"
+                        + " f_random_str STRING\n"
+                        + ") WITH (\n"
+                        + " 'connector' = 'datagen',\n"
+                        + " 'rows-per-second'='10',\n"
+                        + " 'fields.f_sequence.kind'='sequence',\n"
+                        + " 'fields.f_sequence.start'='1',\n"
+                        + " 'fields.f_sequence.end'='1000',\n"
+                        + " 'fields.f_random.min'='1',\n"
+                        + " 'fields.f_random.max'='1000',\n"
+                        + " 'fields.f_random_str.length'='10'\n"
+                        + ")")
+                .putExecutionConfigItem("pipeline.name", "Flink SQL Gateway SDK on K8S Example"));
+
+    System.out.println(statement1.getOperationHandle());
+
+    ExecuteStatementResponseBody statement5 =
+        api.executeStatement(
+            UUID.fromString(response.getSessionHandle()),
+            new ExecuteStatementRequestBody()
+                .statement("select * from datagen;")
+                .putExecutionConfigItem("pipeline.name", "Flink SQL Gateway SDK on K8S Example"));
+
+    System.out.println(statement5.getOperationHandle());
+    try {
+      Thread.sleep(10000);
+    } catch (InterruptedException e) {
+      throw new RuntimeException(e);
+    }
+    FetchResultsResponseBody fetchResultsResponseBody =
+        api.fetchResults(
+            UUID.fromString(response.getSessionHandle()),
+            UUID.fromString(statement1.getOperationHandle()),
+            0L);
+    System.out.println(fetchResultsResponseBody);
+  }
+
   public static void runOnYarnWithUDF(DefaultApi api) throws ApiException {
     OpenSessionResponseBody response =
         api.openSession(
             new OpenSessionRequestBody()
-                .putPropertiesItem("execution.target", "yarn-session")
+                .putPropertiesItem("execution.target", "local")
                 .putPropertiesItem("flink.hadoop.yarn.resourcemanager.ha.enabled", "true")
                 .putPropertiesItem("flink.hadoop.yarn.resourcemanager.ha.rm-ids", "rm1,rm2")
                 .putPropertiesItem("flink.hadoop.yarn.resourcemanager.hostname.rm1", "yarn01")

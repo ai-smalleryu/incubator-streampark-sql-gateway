@@ -401,6 +401,12 @@
             <artifactId>knife4j-spring-boot-autoconfigure</artifactId>
             <version>${swagger-bootstrap.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql.version}</version>
+        </dependency>
     </dependencies>
 
     <profiles>

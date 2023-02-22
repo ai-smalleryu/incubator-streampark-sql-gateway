@@ -76,7 +76,7 @@ public class SqlGatewayServiceFactoryUtils {
               identifier);
 
       services.add(
-          factory.createSqlGatewayService(new DefaultServiceFactoryContext(getServiceConfig())));
+          factory.createSqlGatewayService(new DefaultServiceFactoryContext(configuration)));
     }
     return services;
   }

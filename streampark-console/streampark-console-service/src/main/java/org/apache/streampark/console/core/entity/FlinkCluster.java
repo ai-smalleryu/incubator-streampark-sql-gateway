@@ -212,9 +212,10 @@ public class FlinkCluster implements Serializable {
   }
 
   public String getGatewayAddress() {
+    // todo get gateway address
     if (ExecutionMode.YARN_SESSION.equals(this.getExecutionModeEnum())) {
       return YarnUtils.getRMWebAppURL() + "/proxy/" + this.clusterId;
     }
-    return this.address;
+    return this.address.replace("8081", "8083");
   }
 }

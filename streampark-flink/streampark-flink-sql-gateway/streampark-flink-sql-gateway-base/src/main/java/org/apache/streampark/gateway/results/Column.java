@@ -19,4 +19,4 @@ package org.apache.streampark.gateway.results;
 
 import java.io.Serializable;
 
-public class ResultSchemaInfo implements Serializable {}
+public class Column implements Serializable {}
