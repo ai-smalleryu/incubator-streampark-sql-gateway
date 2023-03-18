@@ -147,7 +147,7 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project>
                     "update deploy by project: {}, appName:{}",
                     project.getName(),
                     app.getJobName());
-                app.setRelease(ReleaseState.NEED_CHECK.get());
+                app.setRelease(ReleaseState.NEED_CHECK);
                 applicationService.updateRelease(app);
               });
         }
@@ -221,7 +221,7 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project>
                         "update deploy by project: {}, appName:{}",
                         project.getName(),
                         app.getJobName());
-                    app.setRelease(ReleaseState.NEED_RELEASE.get());
+                    app.setRelease(ReleaseState.NEED_RELEASE);
                     app.setBuild(true);
                     this.applicationService.updateRelease(app);
                   });
