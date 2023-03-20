@@ -452,7 +452,7 @@ public class AppBuildPipeServiceImpl
   @Override
   public boolean allowToBuildNow(@Nonnull Long appId) {
     return getCurrentBuildPipeline(appId)
-        .map(pipeline -> PipelineStatus.running != pipeline.getPipelineStatus())
+        .map(pipeline -> PipelineStatus.running != pipeline.getPipeStatusCode())
         .orElse(true);
   }
 
@@ -469,7 +469,7 @@ public class AppBuildPipeServiceImpl
       return Collections.emptyMap();
     }
     return appBuildPipelines.stream()
-        .collect(Collectors.toMap(AppBuildPipeline::getAppId, AppBuildPipeline::getPipelineStatus));
+        .collect(Collectors.toMap(AppBuildPipeline::getAppId, AppBuildPipeline::getPipeStatusCode));
   }
 
   @Override

@@ -42,7 +42,7 @@ public enum PipelineStatus {
   success(3),
   failure(4);
 
-  @EnumValue private final Integer code;
+  @JsonValue @EnumValue private final Integer code;
 
   PipelineStatus(Integer code) {
     this.code = code;
