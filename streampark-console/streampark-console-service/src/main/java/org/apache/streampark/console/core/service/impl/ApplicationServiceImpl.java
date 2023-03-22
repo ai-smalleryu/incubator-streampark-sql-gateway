@@ -1412,7 +1412,7 @@ public class ApplicationServiceImpl extends ServiceImpl<ApplicationMapper, Appli
       } else {
         switch (application.getAppType()) {
           case STREAMPARK_FLINK:
-            ConfigFileType fileType = ConfigFileType.of(applicationConfig.getFormat());
+            ConfigFileType fileType = applicationConfig.getFormat();
             if (fileType != null && !fileType.equals(ConfigFileType.UNKNOWN)) {
               appConf =
                   String.format("%s://%s", fileType.getTypeName(), applicationConfig.getContent());

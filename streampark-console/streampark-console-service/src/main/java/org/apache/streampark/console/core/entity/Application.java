@@ -31,6 +31,7 @@ import org.apache.streampark.common.util.Utils;
 import org.apache.streampark.console.base.util.JacksonUtils;
 import org.apache.streampark.console.base.util.WebUtils;
 import org.apache.streampark.console.core.bean.AppControl;
+import org.apache.streampark.console.core.enums.ConfigFileType;
 import org.apache.streampark.console.core.enums.FlinkAppState;
 import org.apache.streampark.console.core.enums.OptionState;
 import org.apache.streampark.console.core.enums.ReleaseState;
@@ -239,7 +240,7 @@ public class Application implements Serializable {
   private transient Long configId;
   private transient String flinkVersion;
   private transient String confPath;
-  private transient Integer format;
+  private transient ConfigFileType format;
   private transient String savePoint;
   private transient Boolean savePointed = false;
   private transient Boolean drain = false;

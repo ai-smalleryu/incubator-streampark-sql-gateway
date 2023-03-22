@@ -21,7 +21,6 @@ import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import java.io.Serializable;
-import java.util.Arrays;
 
 public enum CheckPointType implements Serializable {
   /** CHECKPOINT */
@@ -39,9 +38,5 @@ public enum CheckPointType implements Serializable {
 
   CheckPointType(int value) {
     this.value = value;
-  }
-
-  public static CheckPointType of(Integer value) {
-    return Arrays.stream(values()).filter((x) -> x.value == value).findFirst().orElse(null);
   }
 }

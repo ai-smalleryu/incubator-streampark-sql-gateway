@@ -18,7 +18,6 @@
 package org.apache.streampark.console.core.enums;
 
 import java.io.Serializable;
-import java.util.Arrays;
 
 /** configFile Type enum */
 public enum ConfigFileType implements Serializable {
@@ -44,9 +43,5 @@ public enum ConfigFileType implements Serializable {
 
   public String getTypeName() {
     return typeName;
-  }
-
-  public static ConfigFileType of(Integer value) {
-    return Arrays.stream(values()).filter((x) -> x.value == value).findFirst().orElse(null);
   }
 }
