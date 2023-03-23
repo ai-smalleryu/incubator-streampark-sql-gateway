@@ -1,0 +1,42 @@
+package org.apache.streampark.console.core.service.application;
+
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.apache.streampark.common.enums.ExecutionMode;
+import org.apache.streampark.console.base.domain.RestRequest;
+import org.apache.streampark.console.core.entity.Application;
+import org.apache.streampark.console.core.enums.AppExistsState;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
+public interface QueryApplicationInfoService {
+    //region Application info Query
+
+    AppExistsState checkExists(Application app);
+
+    String checkSavepointPath(Application app) throws Exception;
+
+    String readConf(Application app) throws IOException;
+
+    Application getApp(Application app);
+
+    String getMain(Application application);
+
+    IPage<Application> page(Application app, RestRequest request);
+
+    String getYarnName(Application app);
+
+    Map<String, Serializable> dashboard(Long teamId);
+
+    List<Application> getByProjectId(Long id);
+
+    List<Application> getByTeamId(Long teamId);
+
+    List<Application> getByTeamIdAndExecutionModes(
+        Long teamId, Collection<ExecutionMode> executionModes);
+    //endregion
+
+}

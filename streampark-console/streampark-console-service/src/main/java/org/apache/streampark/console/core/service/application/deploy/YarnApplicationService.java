@@ -15,27 +15,12 @@
  * limitations under the License.
  */
 
-package org.apache.streampark.console.core.service;
+package org.apache.streampark.console.core.service.application.deploy;
 
-import org.apache.streampark.common.enums.ExecutionMode;
-import org.apache.streampark.console.base.domain.RestRequest;
-import org.apache.streampark.console.base.exception.ApplicationException;
 import org.apache.streampark.console.core.entity.Application;
-import org.apache.streampark.console.core.enums.AppExistsState;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.service.IService;
-import org.springframework.web.multipart.MultipartFile;
+public interface YarnApplicationService extends BaseApplicationService {
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
-public interface ApplicationService extends IService<Application> {
-
-
-
+    String getYarnName(Application app);
 
 }
