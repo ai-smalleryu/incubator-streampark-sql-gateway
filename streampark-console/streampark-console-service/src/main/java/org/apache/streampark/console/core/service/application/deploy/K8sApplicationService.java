@@ -15,27 +15,24 @@
  * limitations under the License.
  */
 
-package org.apache.streampark.console.core.service;
+package org.apache.streampark.console.core.service.application.deploy;
 
-import org.apache.streampark.common.enums.ExecutionMode;
-import org.apache.streampark.console.base.domain.RestRequest;
-import org.apache.streampark.console.base.exception.ApplicationException;
-import org.apache.streampark.console.core.entity.Application;
-import org.apache.streampark.console.core.enums.AppExistsState;
-
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.service.IService;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
-public interface ApplicationService extends IService<Application> {
+public interface K8sApplicationService extends BaseApplicationService {
 
+    List<String> getRecentK8sNamespace();
 
+    List<String> getRecentK8sClusterId(Integer executionMode);
 
+    List<String> getRecentFlinkBaseImage();
+
+    List<String> getRecentK8sPodTemplate();
+
+    List<String> getRecentK8sJmPodTemplate();
+
+    List<String> getRecentK8sTmPodTemplate();
+
+    String k8sStartLog(Long id, Integer offset, Integer limit) throws Exception;
 
 }
