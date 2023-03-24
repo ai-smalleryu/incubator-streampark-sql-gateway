@@ -32,10 +32,12 @@ import org.apache.streampark.console.core.metrics.flink.CheckPoints;
 import org.apache.streampark.console.core.metrics.flink.JobsOverview;
 import org.apache.streampark.console.core.metrics.flink.Overview;
 import org.apache.streampark.console.core.metrics.yarn.YarnAppInfo;
-import org.apache.streampark.console.core.service.ApplicationService;
 import org.apache.streampark.console.core.service.FlinkClusterService;
 import org.apache.streampark.console.core.service.SavePointService;
 import org.apache.streampark.console.core.service.alert.AlertService;
+import org.apache.streampark.console.core.service.application.ApplicationService;
+import org.apache.streampark.console.core.service.application.OpApplicationInfoService;
+import org.apache.streampark.console.core.service.application.ValidateApplicationService;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.config.RequestConfig;
@@ -70,7 +72,9 @@ import java.util.stream.Collectors;
 @Component
 public class FlinkRESTAPIWatcher {
 
+  @Autowired private ValidateApplicationService validateApplicationService;
   @Autowired private ApplicationService applicationService;
+  @Autowired private OpApplicationInfoService applicationInfoService;
 
   @Autowired private AlertService alertService;
 
@@ -155,7 +159,7 @@ public class FlinkRESTAPIWatcher {
   public void init() {
     WATCHING_APPS.clear();
     List<Application> applications =
-        applicationService.list(
+        validateApplicationService.list(
             new LambdaQueryWrapper<Application>()
                 .eq(Application::getTracking, 1)
                 .notIn(Application::getExecutionMode, ExecutionMode.getKubernetesMode()));
@@ -166,7 +170,7 @@ public class FlinkRESTAPIWatcher {
   public void doStop() {
     log.info(
         "FlinkRESTAPIWatcher StreamPark Console will be shutdown,persistent application to database.");
-    WATCHING_APPS.forEach((k, v) -> applicationService.persistMetrics(v));
+    WATCHING_APPS.forEach((k, v) -> applicationInfoService.persistMetrics(v));
   }
 
   /**
@@ -387,7 +391,7 @@ public class FlinkRESTAPIWatcher {
               new LambdaUpdateWrapper<Application>()
                   .eq(Application::getId, application.getId())
                   .set(Application::getRelease, ReleaseState.DONE.get());
-          applicationService.update(updateWrapper);
+          validateApplicationService.update(updateWrapper);
           break;
         default:
           break;
@@ -421,7 +425,7 @@ public class FlinkRESTAPIWatcher {
     } else {
       WATCHING_APPS.put(application.getId(), application);
     }
-    applicationService.persistMetrics(application);
+    applicationInfoService.persistMetrics(application);
   }
 
   /**
@@ -451,7 +455,7 @@ public class FlinkRESTAPIWatcher {
             currentState.name());
         cleanSavepoint(application);
         application.setState(currentState.getValue());
-        if (StopFrom.NONE.equals(stopFrom) || applicationService.checkAlter(application)) {
+        if (StopFrom.NONE.equals(stopFrom) || validateApplicationService.checkAlter(application)) {
           if (StopFrom.NONE.equals(stopFrom)) {
             log.info(
                 "FlinkRESTAPIWatcher getFromFlinkRestApi, job cancel is not form StreamPark,savePoint expired!");
@@ -545,7 +549,7 @@ public class FlinkRESTAPIWatcher {
           if (flinkAppState.equals(FlinkAppState.FAILED)
               || flinkAppState.equals(FlinkAppState.LOST)
               || (flinkAppState.equals(FlinkAppState.CANCELED) && StopFrom.NONE.equals(stopFrom))
-              || applicationService.checkAlter(application)) {
+              || validateApplicationService.checkAlter(application)) {
             alertService.alert(application, flinkAppState);
             stopCanceledJob(application.getId());
             if (flinkAppState.equals(FlinkAppState.FAILED)) {

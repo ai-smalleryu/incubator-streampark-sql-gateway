@@ -28,8 +28,8 @@ import org.apache.streampark.console.core.entity.ApplicationLog;
 import org.apache.streampark.console.core.enums.Operation;
 import org.apache.streampark.console.core.service.AppBuildPipeService;
 import org.apache.streampark.console.core.service.ApplicationLogService;
-import org.apache.streampark.console.core.service.ApplicationService;
 import org.apache.streampark.console.core.service.FlinkSqlService;
+import org.apache.streampark.console.core.service.application.ValidateApplicationService;
 import org.apache.streampark.flink.packer.pipeline.DockerResolvedSnapshot;
 import org.apache.streampark.flink.packer.pipeline.PipelineType;
 
@@ -60,7 +60,7 @@ public class ApplicationBuildPipelineController {
 
   @Autowired private AppBuildPipeService appBuildPipeService;
 
-  @Autowired private ApplicationService applicationService;
+  @Autowired private ValidateApplicationService validateApplicationService;
 
   @Autowired private FlinkSqlService flinkSqlService;
 
@@ -98,14 +98,14 @@ public class ApplicationBuildPipelineController {
   @RequiresPermissions("app:create")
   public RestResponse buildApplication(Long appId, boolean forceBuild) {
     try {
-      Application app = applicationService.getById(appId);
+      Application app = validateApplicationService.getById(appId);
 
       ApplicationLog applicationLog = new ApplicationLog();
       applicationLog.setOptionName(Operation.RELEASE.getValue());
       applicationLog.setAppId(app.getId());
       applicationLog.setOptionTime(new Date());
 
-      boolean envOk = applicationService.checkEnv(app);
+      boolean envOk = validateApplicationService.checkEnv(app);
       if (!envOk) {
         throw new ApiAlertException(
             "Check flink env failed, please check the flink version of this job");
@@ -118,7 +118,7 @@ public class ApplicationBuildPipelineController {
       // check if you need to go through the build process (if the jar and pom have changed,
       // you need to go through the build process, if other common parameters are modified,
       // you don't need to go through the build process)
-      boolean needBuild = applicationService.checkBuildAndUpdate(app);
+      boolean needBuild = validateApplicationService.checkBuildAndUpdate(app);
       if (!needBuild) {
         applicationLog.setSuccess(true);
         applicationLogService.save(applicationLog);

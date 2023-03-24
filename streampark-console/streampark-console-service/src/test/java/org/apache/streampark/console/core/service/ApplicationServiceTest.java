@@ -19,6 +19,8 @@ package org.apache.streampark.console.core.service;
 
 import org.apache.streampark.console.SpringTestBase;
 import org.apache.streampark.console.core.entity.Application;
+import org.apache.streampark.console.core.service.application.ApplicationService;
+import org.apache.streampark.console.core.service.application.OpApplicationInfoService;
 
 import org.apache.http.entity.ContentType;
 
@@ -41,6 +43,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /** org.apache.streampark.console.core.service.ApplicationServiceTest. */
 class ApplicationServiceTest extends SpringTestBase {
 
+  @Autowired private OpApplicationInfoService opApplicationInfoService;
   @Autowired private ApplicationService applicationService;
 
   @Test
@@ -77,7 +80,7 @@ class ApplicationServiceTest extends SpringTestBase {
     app.setDrain(false);
     app.setAllowNonRestored(false);
 
-    Assertions.assertDoesNotThrow(() -> applicationService.updateRelease(app));
+    Assertions.assertDoesNotThrow(() -> opApplicationInfoService.updateRelease(app));
   }
 
   @Test
@@ -109,6 +112,6 @@ class ApplicationServiceTest extends SpringTestBase {
             // /tmp/file/streampark.jar)
             ContentType.APPLICATION_OCTET_STREAM.toString(),
             new FileInputStream(fileToStoreUploadFile));
-    applicationService.upload(mulFile);
+    opApplicationInfoService.upload(mulFile);
   }
 }

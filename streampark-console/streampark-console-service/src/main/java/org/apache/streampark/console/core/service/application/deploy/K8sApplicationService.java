@@ -17,22 +17,23 @@
 
 package org.apache.streampark.console.core.service.application.deploy;
 
+import org.apache.streampark.console.core.service.application.ApplicationService;
+
 import java.util.List;
 
-public interface K8sApplicationService extends BaseApplicationService {
+public interface K8sApplicationService extends ApplicationService {
 
-    List<String> getRecentK8sNamespace();
+  List<String> getRecentK8sNamespace();
 
-    List<String> getRecentK8sClusterId(Integer executionMode);
+  List<String> getRecentK8sClusterId(Integer executionMode);
 
-    List<String> getRecentFlinkBaseImage();
+  List<String> getRecentFlinkBaseImage();
 
-    List<String> getRecentK8sPodTemplate();
+  List<String> getRecentK8sPodTemplate();
 
-    List<String> getRecentK8sJmPodTemplate();
+  List<String> getRecentK8sJmPodTemplate();
 
-    List<String> getRecentK8sTmPodTemplate();
+  List<String> getRecentK8sTmPodTemplate();
 
-    String k8sStartLog(Long id, Integer offset, Integer limit) throws Exception;
-
+  String k8sStartLog(Long id, Integer offset, Integer limit) throws Exception;
 }

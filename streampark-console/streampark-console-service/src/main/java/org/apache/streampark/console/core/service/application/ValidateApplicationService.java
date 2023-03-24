@@ -3,20 +3,25 @@ package org.apache.streampark.console.core.service.application;
 import org.apache.streampark.console.base.exception.ApplicationException;
 import org.apache.streampark.console.core.entity.Application;
 
-public interface ValidateApplicationService {
+import com.baomidou.mybatisplus.extension.service.IService;
 
-    //region check application
-    boolean checkEnv(Application app) throws ApplicationException;
+/** Application validation service */
+public interface ValidateApplicationService extends IService<Application> {
 
-    boolean checkAlter(Application application);
+  // region check application
+  boolean checkEnv(Application app) throws ApplicationException;
 
-    boolean checkBuildAndUpdate(Application app);
+  boolean checkAlter(Application application);
 
-    boolean existsRunningJobByClusterId(Long clusterId);
+  boolean checkBuildAndUpdate(Application app);
 
-    boolean existsByTeamId(Long teamId);
+  boolean existsRunningJobByClusterId(Long clusterId);
 
-    boolean existsJobByClusterId(Long id);
-    //endregion
+  boolean existsByTeamId(Long teamId);
+
+  boolean existsJobByClusterId(Long id);
+
+  boolean existsByJobName(String jobName);
+  // endregion
 
 }

@@ -27,10 +27,10 @@ import org.apache.streampark.console.core.bean.ResponseResult;
 import org.apache.streampark.console.core.entity.FlinkCluster;
 import org.apache.streampark.console.core.entity.FlinkEnv;
 import org.apache.streampark.console.core.mapper.FlinkClusterMapper;
-import org.apache.streampark.console.core.service.ApplicationService;
 import org.apache.streampark.console.core.service.CommonService;
 import org.apache.streampark.console.core.service.FlinkClusterService;
 import org.apache.streampark.console.core.service.FlinkEnvService;
+import org.apache.streampark.console.core.service.application.ValidateApplicationService;
 import org.apache.streampark.console.core.task.FlinkRESTAPIWatcher;
 import org.apache.streampark.flink.client.FlinkClient;
 import org.apache.streampark.flink.client.bean.DeployRequest;
@@ -82,7 +82,7 @@ public class FlinkClusterServiceImpl extends ServiceImpl<FlinkClusterMapper, Fli
 
   @Autowired private CommonService commonService;
 
-  @Autowired private ApplicationService applicationService;
+  @Autowired private ValidateApplicationService validateApplicationService;
 
   @Override
   public ResponseResult check(FlinkCluster cluster) {
@@ -277,7 +277,8 @@ public class FlinkClusterServiceImpl extends ServiceImpl<FlinkClusterMapper, Fli
     }
 
     // 3) check job if running on cluster
-    boolean existsRunningJob = applicationService.existsRunningJobByClusterId(flinkCluster.getId());
+    boolean existsRunningJob =
+        validateApplicationService.existsRunningJobByClusterId(flinkCluster.getId());
     if (existsRunningJob) {
       throw new ApiAlertException(
           "some app is running on this cluster, the cluster cannot be shutdown");
@@ -350,7 +351,7 @@ public class FlinkClusterServiceImpl extends ServiceImpl<FlinkClusterMapper, Fli
       }
     }
 
-    if (applicationService.existsJobByClusterId(id)) {
+    if (validateApplicationService.existsJobByClusterId(id)) {
       throw new ApiAlertException(
           "some app on this cluster, the cluster cannot be delete, please check.");
     }
