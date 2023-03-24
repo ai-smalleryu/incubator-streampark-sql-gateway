@@ -15,27 +15,18 @@
  * limitations under the License.
  */
 
-package org.apache.streampark.console.core.service;
+package org.apache.streampark.console.core.service.application;
 
-import org.apache.streampark.common.enums.ExecutionMode;
-import org.apache.streampark.console.base.domain.RestRequest;
-import org.apache.streampark.console.base.exception.ApplicationException;
 import org.apache.streampark.console.core.entity.Application;
-import org.apache.streampark.console.core.enums.AppExistsState;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.service.IService;
-import org.springframework.web.multipart.MultipartFile;
+/** Application corresponding task life cycle management */
+public interface ApplicationService {
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+  void start(Application application, boolean auto) throws Exception;
 
-public interface ApplicationService extends IService<Application> {
+  void restart(Application application) throws Exception;
 
+  void delete(Application application) throws Exception;
 
-
-
+  void cancel(Application application) throws Exception;
 }

@@ -26,9 +26,9 @@ import org.apache.streampark.console.core.entity.Application;
 import org.apache.streampark.console.core.entity.FlinkCluster;
 import org.apache.streampark.console.core.entity.YarnQueue;
 import org.apache.streampark.console.core.mapper.YarnQueueMapper;
-import org.apache.streampark.console.core.service.ApplicationService;
 import org.apache.streampark.console.core.service.FlinkClusterService;
 import org.apache.streampark.console.core.service.YarnQueueService;
+import org.apache.streampark.console.core.service.application.QueryApplicationInfoService;
 import org.apache.streampark.console.core.utils.YarnQueueLabelExpression;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -64,7 +64,7 @@ public class YarnQueueServiceImpl extends ServiceImpl<YarnQueueMapper, YarnQueue
       "The queue label existed already. Try on a new queue label, please.";
   public static final String QUEUE_EMPTY_HINT = "Yarn queue label mustn't be empty.";
   public static final String QUEUE_AVAILABLE_HINT = "The queue label is available.";
-  @Autowired private ApplicationService applicationService;
+  @Autowired private QueryApplicationInfoService queryApplicationInfoService;
   @Autowired private FlinkClusterService flinkClusterService;
 
   @Override
@@ -194,7 +194,7 @@ public class YarnQueueServiceImpl extends ServiceImpl<YarnQueueMapper, YarnQueue
   public void checkNotReferencedByApplications(
       @Nonnull Long teamId, @Nonnull String queueLabel, @Nonnull String operation) {
     List<Application> appsReferenceQueueLabel =
-        applicationService
+        queryApplicationInfoService
             .getByTeamIdAndExecutionModes(
                 teamId, Sets.newHashSet(ExecutionMode.YARN_APPLICATION, ExecutionMode.YARN_PER_JOB))
             .stream()

@@ -18,9 +18,9 @@
 package org.apache.streampark.console.core.service.application.deploy;
 
 import org.apache.streampark.console.core.entity.Application;
+import org.apache.streampark.console.core.service.application.ApplicationService;
 
-public interface YarnApplicationService extends BaseApplicationService {
+public interface YarnApplicationService extends ApplicationService {
 
-    String getYarnName(Application app);
-
+  String getYarnName(Application app);
 }

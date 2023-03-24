@@ -19,7 +19,8 @@ package org.apache.streampark.console.core.controller;
 
 import org.apache.streampark.common.enums.ExecutionMode;
 import org.apache.streampark.console.base.domain.RestResponse;
-import org.apache.streampark.console.core.service.ApplicationService;
+import org.apache.streampark.console.core.service.application.OpApplicationInfoService;
+import org.apache.streampark.console.core.service.application.deploy.K8sApplicationService;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 
@@ -43,19 +44,20 @@ import java.util.List;
 @RequestMapping("flink/history")
 public class ApplicationHistoryController {
 
-  @Autowired private ApplicationService applicationService;
+  @Autowired private OpApplicationInfoService applicationInfoService;
+  @Autowired private K8sApplicationService k8sApplicationService;
 
   @PostMapping("uploadJars")
   @RequiresPermissions("app:create")
   public RestResponse listUploadJars() {
-    List<String> jars = applicationService.historyUploadJars();
+    List<String> jars = applicationInfoService.historyUploadJars();
     return RestResponse.success(jars);
   }
 
   @PostMapping("k8sNamespaces")
   @RequiresPermissions("app:create")
   public RestResponse listK8sNamespace() {
-    List<String> namespaces = applicationService.getRecentK8sNamespace();
+    List<String> namespaces = k8sApplicationService.getRecentK8sNamespace();
     return RestResponse.success(namespaces);
   }
 
@@ -67,7 +69,7 @@ public class ApplicationHistoryController {
       case KUBERNETES_NATIVE_SESSION:
       case YARN_SESSION:
       case REMOTE:
-        clusterIds = applicationService.getRecentK8sClusterId(executionMode);
+        clusterIds = k8sApplicationService.getRecentK8sClusterId(executionMode);
         break;
       default:
         clusterIds = new ArrayList<>(0);
@@ -79,28 +81,28 @@ public class ApplicationHistoryController {
   @PostMapping("flinkBaseImages")
   @RequiresPermissions("app:create")
   public RestResponse listFlinkBaseImage() {
-    List<String> images = applicationService.getRecentFlinkBaseImage();
+    List<String> images = k8sApplicationService.getRecentFlinkBaseImage();
     return RestResponse.success(images);
   }
 
   @PostMapping("flinkPodTemplates")
   @RequiresPermissions("app:create")
   public RestResponse listPodTemplate() {
-    List<String> templates = applicationService.getRecentK8sPodTemplate();
+    List<String> templates = k8sApplicationService.getRecentK8sPodTemplate();
     return RestResponse.success(templates);
   }
 
   @PostMapping("flinkJmPodTemplates")
   @RequiresPermissions("app:create")
   public RestResponse listJmPodTemplate() {
-    List<String> templates = applicationService.getRecentK8sJmPodTemplate();
+    List<String> templates = k8sApplicationService.getRecentK8sJmPodTemplate();
     return RestResponse.success(templates);
   }
 
   @PostMapping("flinkTmPodTemplates")
   @RequiresPermissions("app:create")
   public RestResponse listTmPodTemplate() {
-    List<String> templates = applicationService.getRecentK8sTmPodTemplate();
+    List<String> templates = k8sApplicationService.getRecentK8sTmPodTemplate();
     return RestResponse.success(templates);
   }
 }

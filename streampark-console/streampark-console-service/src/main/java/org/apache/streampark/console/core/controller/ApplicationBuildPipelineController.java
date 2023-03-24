@@ -32,6 +32,7 @@ import org.apache.streampark.console.core.service.ApplicationLogService;
 import org.apache.streampark.console.core.service.ApplicationService;
 import org.apache.streampark.console.core.service.FlinkEnvService;
 import org.apache.streampark.console.core.service.FlinkSqlService;
+import org.apache.streampark.console.core.service.application.ValidateApplicationService;
 import org.apache.streampark.flink.packer.pipeline.DockerResolvedSnapshot;
 import org.apache.streampark.flink.packer.pipeline.PipelineType;
 
@@ -62,7 +63,7 @@ public class ApplicationBuildPipelineController {
 
   @Autowired private AppBuildPipeService appBuildPipeService;
 
-  @Autowired private ApplicationService applicationService;
+  @Autowired private ValidateApplicationService validateApplicationService;
 
   @Autowired private FlinkSqlService flinkSqlService;
 
@@ -102,7 +103,7 @@ public class ApplicationBuildPipelineController {
   @RequiresPermissions("app:create")
   public RestResponse buildApplication(Long appId, boolean forceBuild) {
     try {
-      Application app = applicationService.getById(appId);
+      Application app = validateApplicationService.getById(appId);
 
       // 1) check flink version
       FlinkEnv env = flinkEnvService.getById(app.getVersionId());
@@ -113,7 +114,7 @@ public class ApplicationBuildPipelineController {
       }
 
       // 2) check env
-      boolean envOk = applicationService.checkEnv(app);
+      boolean envOk = validateApplicationService.checkEnv(app);
       if (!envOk) {
         throw new ApiAlertException(
             "Check flink env failed, please check the flink version of this job");
@@ -132,7 +133,7 @@ public class ApplicationBuildPipelineController {
       applicationLog.setAppId(app.getId());
       applicationLog.setOptionTime(new Date());
 
-      boolean needBuild = applicationService.checkBuildAndUpdate(app);
+      boolean needBuild = validateApplicationService.checkBuildAndUpdate(app);
       if (!needBuild) {
         applicationLog.setSuccess(true);
         applicationLogService.save(applicationLog);
