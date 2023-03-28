@@ -38,6 +38,7 @@ import org.apache.streampark.console.core.service.application.OpApplicationInfoS
 import org.apache.streampark.console.core.service.application.QueryApplicationInfoService;
 import org.apache.streampark.console.core.service.application.ValidateApplicationService;
 import org.apache.streampark.console.core.service.application.deploy.K8sApplicationService;
+import org.apache.streampark.console.core.service.application.deploy.YarnApplicationService;
 import org.apache.streampark.flink.packer.pipeline.PipelineStatus;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -49,6 +50,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -72,7 +74,10 @@ import java.util.stream.Collectors;
 @RequestMapping("flink/app")
 public class ApplicationController {
 
-  @Autowired private ApplicationService applicationService;
+  @Autowired
+  @Qualifier("streamApplicationService")
+  private ApplicationService applicationService;
+
   @Autowired private OpApplicationInfoService applicationInfoService;
 
   @Autowired private QueryApplicationInfoService queryApplicationInfoService;
@@ -80,6 +85,7 @@ public class ApplicationController {
   @Autowired private ValidateApplicationService validateApplicationService;
 
   @Autowired private K8sApplicationService k8sApplicationService;
+  @Autowired private YarnApplicationService yarnApplicationService;
 
   @Autowired private ApplicationBackUpService backUpService;
 
@@ -317,7 +323,7 @@ public class ApplicationController {
 
   @PostMapping("name")
   public RestResponse yarnName(Application app) {
-    String yarnName = queryApplicationInfoService.getYarnName(app);
+    String yarnName = yarnApplicationService.getYarnName(app);
     return RestResponse.success(yarnName);
   }
 
