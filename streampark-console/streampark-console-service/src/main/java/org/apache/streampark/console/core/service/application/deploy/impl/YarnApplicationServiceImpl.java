@@ -3,6 +3,7 @@ package org.apache.streampark.console.core.service.application.deploy.impl;
 import org.apache.streampark.console.core.entity.Application;
 import org.apache.streampark.console.core.mapper.ApplicationMapper;
 import org.apache.streampark.console.core.service.application.deploy.YarnApplicationService;
+import org.apache.streampark.flink.core.conf.ParameterCli;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +30,10 @@ public class YarnApplicationServiceImpl extends ServiceImpl<ApplicationMapper, A
   public void cancel(Application application) throws Exception {}
 
   @Override
-  public String getYarnName(Application app) {
-    return null;
+  public String getYarnName(Application application) {
+    String[] args = new String[2];
+    args[0] = "--name";
+    args[1] = application.getConfig();
+    return ParameterCli.read(args);
   }
 }

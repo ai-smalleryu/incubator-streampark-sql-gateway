@@ -26,7 +26,6 @@ import org.apache.streampark.console.core.service.SavePointService;
 import org.apache.streampark.console.core.service.application.QueryApplicationInfoService;
 import org.apache.streampark.console.core.service.application.ValidateApplicationService;
 import org.apache.streampark.console.core.task.FlinkRESTAPIWatcher;
-import org.apache.streampark.flink.core.conf.ParameterCli;
 import org.apache.streampark.flink.kubernetes.FlinkK8sWatcher;
 import org.apache.streampark.flink.kubernetes.model.FlinkMetricCV;
 
@@ -207,14 +206,6 @@ public class QueryApplicationInfoServiceImpl extends ServiceImpl<ApplicationMapp
             .collect(Collectors.toList());
     page.setRecords(newRecords);
     return page;
-  }
-
-  @Override
-  public String getYarnName(Application appParam) {
-    String[] args = new String[2];
-    args[0] = "--name";
-    args[1] = appParam.getConfig();
-    return ParameterCli.read(args);
   }
 
   /** Check if the current jobName and other key identifiers already exist in db and yarn/k8s */

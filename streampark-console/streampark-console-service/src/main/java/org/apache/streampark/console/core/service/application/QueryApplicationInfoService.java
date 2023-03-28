@@ -30,8 +30,6 @@ public interface QueryApplicationInfoService extends IService<Application> {
 
   IPage<Application> page(Application app, RestRequest request);
 
-  String getYarnName(Application app);
-
   Map<String, Serializable> dashboard(Long teamId);
 
   List<Application> getByProjectId(Long id);
