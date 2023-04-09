@@ -26,7 +26,5 @@ public interface ApplicationService {
 
   void restart(Application application) throws Exception;
 
-  void delete(Application application) throws Exception;
-
   void cancel(Application application) throws Exception;
 }

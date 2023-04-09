@@ -16,7 +16,6 @@ import java.util.Map;
 
 /** Application info query service */
 public interface QueryApplicationInfoService extends IService<Application> {
-  // region Application info Query
 
   AppExistsState checkExists(Application app);
 
@@ -39,6 +38,5 @@ public interface QueryApplicationInfoService extends IService<Application> {
   List<Application> getByTeamIdAndExecutionModes(
       Long teamId, Collection<ExecutionMode> executionModes);
 
-  // endregion
-
+  String getSavePointed(Application appParam);
 }

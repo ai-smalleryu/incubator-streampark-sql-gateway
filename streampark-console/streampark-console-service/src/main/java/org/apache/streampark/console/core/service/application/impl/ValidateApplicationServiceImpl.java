@@ -28,27 +28,25 @@ import org.apache.streampark.console.core.task.FlinkRESTAPIWatcher;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 
 @Slf4j
+@RequiredArgsConstructor
 @Service
 public class ValidateApplicationServiceImpl extends ServiceImpl<ApplicationMapper, Application>
     implements ValidateApplicationService {
 
-  @Autowired private OpApplicationInfoService applicationInfoService;
-  @Autowired private ApplicationBackUpService backUpService;
-  @Autowired private ApplicationConfigService configService;
-
-  @Autowired private FlinkSqlService flinkSqlService;
-
-  @Autowired private FlinkEnvService flinkEnvService;
-
-  @Autowired private EnvInitializer envInitializer;
-  @Autowired private FlinkClusterService flinkClusterService;
+  private final OpApplicationInfoService applicationInfoService;
+  private final ApplicationBackUpService backUpService;
+  private final ApplicationConfigService configService;
+  private final FlinkSqlService flinkSqlService;
+  private final FlinkEnvService flinkEnvService;
+  private final EnvInitializer envInitializer;
+  private final FlinkClusterService flinkClusterService;
 
   @PostConstruct
   public void resetOptionState() {

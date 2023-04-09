@@ -12,6 +12,7 @@ import org.apache.streampark.console.core.entity.Application;
 import org.apache.streampark.console.core.entity.ApplicationConfig;
 import org.apache.streampark.console.core.entity.FlinkSql;
 import org.apache.streampark.console.core.entity.Project;
+import org.apache.streampark.console.core.entity.SavePoint;
 import org.apache.streampark.console.core.enums.AppExistsState;
 import org.apache.streampark.console.core.enums.CandidateType;
 import org.apache.streampark.console.core.enums.ChangedType;
@@ -37,14 +38,13 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Nonnull;
-import javax.annotation.PostConstruct;
 
 import java.io.File;
 import java.io.IOException;
@@ -66,6 +66,7 @@ import static org.apache.streampark.console.core.task.FlinkK8sWatcherWrapper.isK
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class QueryApplicationInfoServiceImpl extends ServiceImpl<ApplicationMapper, Application>
     implements QueryApplicationInfoService {
@@ -75,19 +76,12 @@ public class QueryApplicationInfoServiceImpl extends ServiceImpl<ApplicationMapp
 
   private static final Pattern SINGLE_SPACE_PATTERN = Pattern.compile("^\\S+(\\s\\S+)*$");
 
-  @Autowired private ProjectService projectService;
-  @Autowired private ApplicationConfigService configService;
-
-  @Autowired private ValidateApplicationService validateApplicationService;
-  @Autowired private FlinkSqlService flinkSqlService;
-
-  @Autowired private SavePointService savePointService;
-  @Autowired private FlinkK8sWatcher k8SFlinkTrackMonitor;
-
-  @PostConstruct
-  public void resetOptionState() {
-    this.baseMapper.resetOptionState();
-  }
+  private final ProjectService projectService;
+  private final ApplicationConfigService configService;
+  private final ValidateApplicationService validateApplicationService;
+  private final FlinkSqlService flinkSqlService;
+  private final SavePointService savePointService;
+  private final FlinkK8sWatcher k8SFlinkTrackMonitor;
 
   @Override
   public Map<String, Serializable> dashboard(Long teamId) {
@@ -457,6 +451,21 @@ public class QueryApplicationInfoServiceImpl extends ServiceImpl<ApplicationMapp
     } else {
       return "When custom savepoint is not set, state.savepoints.dir needs to be set in properties or flink-conf.yaml of application";
     }
+  }
+
+  @Override
+  public String getSavePointed(Application appParam) {
+    if (appParam.getSavePointed()) {
+      if (appParam.getSavePoint() == null) {
+        SavePoint savePoint = savePointService.getLatest(appParam.getId());
+        if (savePoint != null) {
+          return savePoint.getPath();
+        }
+      } else {
+        return appParam.getSavePoint();
+      }
+    }
+    return null;
   }
 
   private Boolean checkJobName(String jobName) {

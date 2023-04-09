@@ -25,7 +25,6 @@ import org.apache.streampark.console.core.service.ApplicationConfigService;
 import org.apache.streampark.console.core.service.ApplicationLogService;
 import org.apache.streampark.console.core.service.CommonService;
 import org.apache.streampark.console.core.service.EffectiveService;
-import org.apache.streampark.console.core.service.FlinkClusterService;
 import org.apache.streampark.console.core.service.FlinkSqlService;
 import org.apache.streampark.console.core.service.SavePointService;
 import org.apache.streampark.console.core.service.SettingService;
@@ -45,9 +44,9 @@ import org.apache.commons.io.FilenameUtils;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -74,44 +73,54 @@ import static org.apache.streampark.console.core.utils.YarnQueueLabelExpression.
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class OpApplicationInfoServiceImpl extends ServiceImpl<ApplicationMapper, Application>
     implements OpApplicationInfoService {
   private static final int DEFAULT_HISTORY_RECORD_LIMIT = 25;
-  @Autowired private ValidateApplicationService validateApplicationService;
 
-  @Autowired private ApplicationBackUpService backUpService;
+  private final ValidateApplicationService validateApplicationService;
 
-  @Autowired private ApplicationConfigService configService;
+  private final ApplicationBackUpService backUpService;
 
-  @Autowired private ApplicationLogService applicationLogService;
+  private final ApplicationConfigService configService;
 
-  @Autowired private FlinkSqlService flinkSqlService;
+  private final ApplicationLogService applicationLogService;
 
-  @Autowired private SavePointService savePointService;
+  private final FlinkSqlService flinkSqlService;
 
-  @Autowired private EffectiveService effectiveService;
+  private final SavePointService savePointService;
 
-  @Autowired private SettingService settingService;
+  private final EffectiveService effectiveService;
 
-  @Autowired private CommonService commonService;
+  private final SettingService settingService;
 
-  @Autowired private FlinkK8sWatcher k8SFlinkTrackMonitor;
+  private final CommonService commonService;
 
-  @Autowired private AppBuildPipeService appBuildPipeService;
+  private final FlinkK8sWatcher k8SFlinkTrackMonitor;
 
-  @Autowired private FlinkClusterService flinkClusterService;
+  private final AppBuildPipeService appBuildPipeService;
+
+  public final Map<Long, CompletableFuture<SubmitResponse>> startFutureMap =
+      new ConcurrentHashMap<>();
+
+  public final Map<Long, CompletableFuture<CancelResponse>> cancelFutureMap =
+      new ConcurrentHashMap<>();
 
   @PostConstruct
   public void resetOptionState() {
     this.baseMapper.resetOptionState();
   }
 
-  private final Map<Long, CompletableFuture<SubmitResponse>> startFutureMap =
-      new ConcurrentHashMap<>();
+  @Override
+  public Map<Long, CompletableFuture<SubmitResponse>> getStartFutureMap() {
+    return startFutureMap;
+  }
 
-  private final Map<Long, CompletableFuture<CancelResponse>> cancelFutureMap =
-      new ConcurrentHashMap<>();
+  @Override
+  public Map<Long, CompletableFuture<CancelResponse>> getCancelFutureMap() {
+    return cancelFutureMap;
+  }
 
   @Override
   public String upload(MultipartFile file) throws Exception {
@@ -598,7 +607,8 @@ public class OpApplicationInfoServiceImpl extends ServiceImpl<ApplicationMapper,
     updateById(application);
   }
 
-  private void updateToStopped(Application app) {
+  @Override
+  public void updateToStopped(Application app) {
     Application application = getById(app);
     application.setOptionState(OptionState.NONE.getValue());
     application.setState(FlinkAppState.CANCELED.getValue());
